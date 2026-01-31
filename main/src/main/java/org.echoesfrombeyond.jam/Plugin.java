@@ -2,7 +2,6 @@ package org.echoesfrombeyond.jam;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.ResourceType;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -69,22 +68,13 @@ public class Plugin extends JavaPlugin {
               if (world == null) return;
 
               world.execute(
-                  () -> {
-                    // counterstrike reference?
-                    var cs = world.getChunkStore();
-                    var chuncc =
-                        ChunkUtil.indexChunkFromBlock(
-                            (int) Math.floor(VEC.x), (int) Math.floor(VEC.z));
-
-                    var cref = cs.getChunkReference(chuncc);
-                    if (cref == null) return;
-
-                    cref.getStore()
-                        .invoke(
-                            cref,
-                            new MouseClickEvent(
-                                new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType));
-                  });
+                  () ->
+                      world
+                          .getChunkStore()
+                          .getStore()
+                          .invoke(
+                              new MouseClickEvent(
+                                  new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType)));
             }
           }
         });
