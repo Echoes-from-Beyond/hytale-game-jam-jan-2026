@@ -88,13 +88,14 @@ public class Plugin extends JavaPlugin {
     settings.displayCursor = true;
     settings.isFirstPerson = false;
     settings.movementForceRotationType = MovementForceRotationType.Custom;
-    settings.movementForceRotation = new Direction(-0.7853981634f, 0.0f, 0.0f);  // 45° right
+    settings.movementForceRotation = new Direction(-0.7853981634f, 0.0f, 0.0f);
+    settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
     settings.eyeOffset = true;
     settings.positionDistanceOffsetType = PositionDistanceOffsetType.DistanceOffset;
     settings.rotationType = RotationType.Custom;
-    settings.rotation = new Direction(0.0f, -1.5707964f, 0.0f);  // Look straight down
+    settings.rotation = new Direction(0.0f, -1.5707964f, 0.0f);
     settings.mouseInputType = MouseInputType.LookAtPlane;
-    settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);       // Ground plane
+    settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
 
     ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
   }
