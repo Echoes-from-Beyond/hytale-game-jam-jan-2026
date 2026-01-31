@@ -18,9 +18,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
-import java.nio.file.Path;
-
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("unused")
@@ -32,39 +32,44 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
-    PacketAdapters.registerInbound(new PacketWatcher() {
-      @Override
-      public void accept(PacketHandler packetHandler, Packet packet) {
-        if (packet instanceof MouseInteraction interaction) {
-          var in = interaction.worldInteraction;
-          if (in == null) return;
+    PacketAdapters.registerInbound(
+        new PacketWatcher() {
+          @Override
+          public void accept(PacketHandler packetHandler, Packet packet) {
+            if (packet instanceof MouseInteraction interaction) {
+              var in = interaction.worldInteraction;
+              if (in == null) return;
 
-          var bp = in.blockPosition;
-          if (bp == null) return;
+              var bp = in.blockPosition;
+              if (bp == null) return;
 
-          System.out.println("Player clicked block " + bp.x + ", " + bp.y + ", " + bp.z);
-        }
-      }
-    });
+              System.out.println("Player clicked block " + bp.x + ", " + bp.y + ", " + bp.z);
+            }
+          }
+        });
 
     getEventRegistry()
-        .registerGlobal(PlayerReadyEvent.class, ready -> {
-          var player = ready.getPlayer();
-          var world = player.getWorld();
-          if (world == null) return;
+        .registerGlobal(
+            PlayerReadyEvent.class,
+            ready -> {
+              var player = ready.getPlayer();
+              var world = player.getWorld();
+              if (world == null) return;
 
-          world.execute(() -> {
-            var ref = player.getReference();
-            if (ref == null) return;
+              world.execute(
+                  () -> {
+                    var ref = player.getReference();
+                    if (ref == null) return;
 
-            var store = ref.getStore();
-            var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
-            if (playerRef == null) return;
+                    var store = ref.getStore();
+                    var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+                    if (playerRef == null) return;
 
-            if (!world.getName().equals("World-" + playerRef.getUuid())) leaveSimWorld(playerRef);
-            else joinSimWorld(playerRef);
-          });
-        });
+                    if (!world.getName().equals("World-" + playerRef.getUuid()))
+                      leaveSimWorld(playerRef);
+                    else joinSimWorld(playerRef);
+                  });
+            });
 
     getEventRegistry()
         .registerGlobal(
@@ -76,22 +81,21 @@ public class Plugin extends JavaPlugin {
 
               var existing = universe.getWorld(name);
               if (existing != null) {
-                var playerRef = universe.getPlayer(uuid);
-                if (playerRef == null) return;
-
-                sendToOwnWorld(playerRef, existing);
+                connect.setWorld(existing);
                 return;
               }
 
-              universe
-                  .makeWorld(name, Path.of("universe", "worlds", name), genWorldConfig())
-                  .thenAccept(
-                      world -> {
-                        var playerRef = universe.getPlayer(uuid);
-                        if (playerRef == null) return;
+              World world;
+              try {
+                world =
+                    universe
+                        .makeWorld(name, Path.of("universe", "worlds", name), genWorldConfig())
+                        .get();
+              } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+              }
 
-                        sendToOwnWorld(playerRef, world);
-                      });
+              connect.setWorld(world);
             });
   }
 
@@ -100,6 +104,8 @@ public class Plugin extends JavaPlugin {
   }
 
   private static void joinSimWorld(PlayerRef ref) {
+    setPos(ref);
+
     ServerCameraSettings settings = new ServerCameraSettings();
     settings.positionLerpSpeed = 0.2f;
     settings.rotationLerpSpeed = 0.2f;
@@ -116,32 +122,33 @@ public class Plugin extends JavaPlugin {
     settings.mouseInputType = MouseInputType.LookAtTargetEntity;
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
 
-    ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
+    // ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true,
+    // settings));
   }
 
   private WorldConfig genWorldConfig() {
     var conf = new WorldConfig();
     conf.setGameTimePaused(true);
     conf.setSeed(1769837468940L);
+    conf.setSpawningNPC(false);
+
     return conf;
   }
 
-  public static void sendToOwnWorld(PlayerRef playerRef, World target) {
+  public static void setPos(PlayerRef playerRef) {
     var currentUuid = playerRef.getWorldUuid();
     if (currentUuid == null) return;
 
     var current = Universe.get().getWorld(currentUuid);
     if (current == null) return;
 
-    current.execute(() -> {
-      Ref<EntityStore> ref = playerRef.getReference();
-      if (ref == null) return;
+    Ref<EntityStore> ref = playerRef.getReference();
+    if (ref == null) return;
 
-      ref.getStore().addComponent(
-          ref,
-          Teleport.getComponentType(),
-          new Teleport(target, new Vector3d(684, 148, -2334), new Vector3f(0, 0, 0))
-      );
-    });
+    ref.getStore()
+        .addComponent(
+            ref,
+            Teleport.getComponentType(),
+            new Teleport(new Vector3d(684, 148, -2334), new Vector3f(0, 0, 0)));
   }
 }
