@@ -2,6 +2,7 @@ package org.echoesfrombeyond.jam;
 
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.Universe;
 import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("unused")
@@ -12,5 +13,7 @@ public class Plugin extends JavaPlugin {
   }
 
   @Override
-  protected void setup() {}
+  protected void setup() {
+    var universe = Universe.get();
+  }
 }

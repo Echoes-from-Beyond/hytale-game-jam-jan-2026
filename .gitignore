@@ -3,9 +3,11 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+!**/src/test/**/run/
 .kotlin
 .idea
 .hytale
+run
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
