@@ -122,8 +122,8 @@ public class Plugin extends JavaPlugin {
     settings.mouseInputType = MouseInputType.LookAtTargetEntity;
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
 
-    // ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true,
-    // settings));
+    ref.getPacketHandler()
+        .writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
   }
 
   private WorldConfig genWorldConfig() {
