@@ -32,6 +32,9 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
+    getChunkStoreRegistry()
+        .registerComponent(JamComponent.class, "Jam_Component", JamComponent.CODEC);
+
     PacketAdapters.registerInbound(
         new PacketWatcher() {
           @Override
