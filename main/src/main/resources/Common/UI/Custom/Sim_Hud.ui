@@ -1,0 +1,46 @@
+@LabelStyle = (
+  FontSize: 28
+);
+
+Group {
+  Background: #AAAAAA(0.25);
+  Anchor: (Right: 30, Top: 10, Width: 300, Height: 190);
+  LayoutMode: Left;
+  Padding: (Horizontal: 10);
+
+  Group {
+    LayoutMode: Top;
+    Padding: (Vertical: 10);
+
+    Label {
+      Text: "Colonists";
+      Style: (...@LabelStyle);
+    }
+
+    Label {
+      Text: "Food";
+      Style: (...@LabelStyle);
+    }
+
+    Label {
+      Text: "Water";
+      Style: (...@LabelStyle);
+    }
+
+    Label {
+      Text: "Scrap";
+      Style: (...@LabelStyle);
+    }
+  }
+
+  Group {
+    LayoutMode: Top;
+    Padding: (Vertical: 10, Horizontal: 20);
+
+    Label #colonists { Text: "0"; Style: (...@LabelStyle); }
+    Label #food { Text: "0"; Style: (...@LabelStyle); }
+    Label #water { Text: "0"; Style: (...@LabelStyle); }
+    Label #scrap { Text: "0"; Style: (...@LabelStyle); }
+  }
+}
+

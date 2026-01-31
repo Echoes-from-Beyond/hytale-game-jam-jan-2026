@@ -8,6 +8,8 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.*;
 import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
 import com.hypixel.hytale.protocol.packets.player.MouseInteraction;
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -15,6 +17,7 @@ import com.hypixel.hytale.server.core.io.adapter.PlayerPacketWatcher;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -42,42 +45,47 @@ public class Plugin extends JavaPlugin {
     super(init);
   }
 
+  public static void updateHud(World world) {
+    world.getEntityStore().getStore().invoke(new HudUpdateSystem.Event());
+  }
+
   @Override
   protected void setup() {
     JAM_TYPE = getChunkStoreRegistry().registerResource(Jam.class, "Jam", Jam.CODEC);
 
     getChunkStoreRegistry().registerSystem(new MouseClickSystem());
+    getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
 
     PacketAdapters.registerInbound(
-        new PlayerPacketWatcher() {
-          @Override
-          public void accept(PlayerRef playerRef, Packet packet) {
-            if (packet instanceof MouseInteraction interaction) {
-              var in = interaction.worldInteraction;
-              if (in == null) return;
+        (PlayerPacketWatcher)
+            (playerRef, packet) -> {
+              if (packet instanceof MouseInteraction interaction) {
+                var in = interaction.worldInteraction;
+                if (in == null) return;
 
-              var bp = in.blockPosition;
-              if (bp == null) return;
+                var bp = in.blockPosition;
+                if (bp == null) return;
 
-              var mb = interaction.mouseButton;
-              if (mb == null) return;
+                var mb = interaction.mouseButton;
+                if (mb == null) return;
 
-              var worldUuid = playerRef.getWorldUuid();
-              if (worldUuid == null) return;
-              var world = Universe.get().getWorld(worldUuid);
-              if (world == null) return;
+                var worldUuid = playerRef.getWorldUuid();
+                if (worldUuid == null) return;
+                var world = Universe.get().getWorld(worldUuid);
+                if (world == null) return;
 
-              world.execute(
-                  () ->
-                      world
-                          .getChunkStore()
-                          .getStore()
-                          .invoke(
-                              new MouseClickEvent(
-                                  new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType)));
-            }
-          }
-        });
+                world.execute(
+                    () ->
+                        world
+                            .getChunkStore()
+                            .getStore()
+                            .invoke(
+                                new MouseClickEvent(
+                                    playerRef.getUuid(),
+                                    new Vector3i(bp.x, bp.y, bp.z),
+                                    mb.mouseButtonType)));
+              }
+            });
 
     getEventRegistry()
         .registerGlobal(
@@ -131,11 +139,31 @@ public class Plugin extends JavaPlugin {
   }
 
   private static void leaveSimWorld(PlayerRef ref) {
+    var r = ref.getReference();
+    if (r != null) {
+      var player = r.getStore().getComponent(r, Player.getComponentType());
+      if (player != null)
+        player
+            .getHudManager()
+            .setCustomHud(
+                ref,
+                new CustomUIHud(ref) {
+                  @Override
+                  protected void build(UICommandBuilder var1) {}
+                });
+    }
+
     ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, false, null));
   }
 
   private static void joinSimWorld(PlayerRef ref) {
     setPos(ref);
+
+    var r = ref.getReference();
+    if (r != null) {
+      var player = r.getStore().getComponent(r, Player.getComponentType());
+      if (player != null) player.getHudManager().setCustomHud(ref, new SimHud(ref));
+    }
 
     ServerCameraSettings settings = new ServerCameraSettings();
     settings.positionLerpSpeed = 0.2f;
