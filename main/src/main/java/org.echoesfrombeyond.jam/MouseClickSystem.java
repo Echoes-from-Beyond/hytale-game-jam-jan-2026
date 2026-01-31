@@ -18,7 +18,5 @@ public class MouseClickSystem extends WorldEventSystem<ChunkStore, MouseClickEve
       CommandBuffer<ChunkStore> commandBuffer,
       MouseClickEvent mouseClickEvent) {
     var jam = commandBuffer.getResource(Plugin.getJamType());
-
-    System.out.println(jam.clickCounter++);
   }
 }
