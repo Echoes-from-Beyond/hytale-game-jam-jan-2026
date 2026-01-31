@@ -5,8 +5,12 @@ import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.protocol.*;
 import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
+import com.hypixel.hytale.protocol.packets.player.MouseInteraction;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.io.PacketHandler;
+import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
+import com.hypixel.hytale.server.core.io.adapter.PacketWatcher;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -28,6 +32,21 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
+    PacketAdapters.registerInbound(new PacketWatcher() {
+      @Override
+      public void accept(PacketHandler packetHandler, Packet packet) {
+        if (packet instanceof MouseInteraction interaction) {
+          var in = interaction.worldInteraction;
+          if (in == null) return;
+
+          var bp = in.blockPosition;
+          if (bp == null) return;
+
+          System.out.println("Player clicked block " + bp.x + ", " + bp.y + ", " + bp.z);
+        }
+      }
+    });
+
     getEventRegistry()
         .registerGlobal(PlayerReadyEvent.class, ready -> {
           var player = ready.getPlayer();
@@ -94,7 +113,7 @@ public class Plugin extends JavaPlugin {
     settings.positionDistanceOffsetType = PositionDistanceOffsetType.DistanceOffset;
     settings.rotationType = RotationType.Custom;
     settings.rotation = new Direction(0.0f, -1.5707964f, 0.0f);
-    settings.mouseInputType = MouseInputType.LookAtPlane;
+    settings.mouseInputType = MouseInputType.LookAtTargetEntity;
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
 
     ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
