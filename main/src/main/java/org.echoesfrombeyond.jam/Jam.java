@@ -3,15 +3,14 @@ package org.echoesfrombeyond.jam;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
-import com.hypixel.hytale.component.Component;
+import com.hypixel.hytale.component.Resource;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 @NullMarked
-public class JamComponent implements Component<ChunkStore> {
-  public static final BuilderCodec<JamComponent> CODEC =
-      BuilderCodec.builder(JamComponent.class, JamComponent::new)
+public class Jam implements Resource<ChunkStore> {
+  public static final BuilderCodec<Jam> CODEC =
+      BuilderCodec.builder(Jam.class, Jam::new)
           .append(
               new KeyedCodec<>("ClickCounter", Codec.INTEGER),
               (self, value) -> self.clickCounter = value,
@@ -21,15 +20,15 @@ public class JamComponent implements Component<ChunkStore> {
 
   public int clickCounter;
 
-  public JamComponent() {}
+  public Jam() {}
 
-  public JamComponent(JamComponent other) {
+  public Jam(Jam other) {
     this.clickCounter = other.clickCounter;
   }
 
   @Override
   @SuppressWarnings("MethodDoesntCallSuperMethod")
-  public @Nullable Component<ChunkStore> clone() {
-    return new JamComponent(this);
+  public Resource<ChunkStore> clone() {
+    return new Jam(this);
   }
 }

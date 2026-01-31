@@ -22,14 +22,13 @@ public class MouseClickSystem extends EntityEventSystem<ChunkStore, MouseClickEv
       Store<ChunkStore> store,
       CommandBuffer<ChunkStore> commandBuffer,
       MouseClickEvent mouseClickEvent) {
-    var jam = archetypeChunk.getComponent(i, Plugin.getJamType());
-    assert jam != null;
+    var jam = commandBuffer.getResource(Plugin.getJamType());
 
     System.out.println(jam.clickCounter++);
   }
 
   @Override
   public Query<ChunkStore> getQuery() {
-    return Archetype.of(Plugin.getJamType());
+    return Archetype.empty();
   }
 }

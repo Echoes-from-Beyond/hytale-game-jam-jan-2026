@@ -1,7 +1,7 @@
 package org.echoesfrombeyond.jam;
 
-import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.ResourceType;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -32,9 +32,9 @@ import org.jspecify.annotations.Nullable;
 public class Plugin extends JavaPlugin {
   private static final Vector3d VEC = new Vector3d(1127, 143, -2685);
 
-  private static @Nullable ComponentType<ChunkStore, JamComponent> JAM_TYPE;
+  private static @Nullable ResourceType<ChunkStore, Jam> JAM_TYPE;
 
-  public static ComponentType<ChunkStore, JamComponent> getJamType() {
+  public static ResourceType<ChunkStore, Jam> getJamType() {
     assert JAM_TYPE != null;
     return JAM_TYPE;
   }
@@ -45,9 +45,7 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
-    JAM_TYPE =
-        getChunkStoreRegistry()
-            .registerComponent(JamComponent.class, "Jam_Component", JamComponent.CODEC);
+    JAM_TYPE = getChunkStoreRegistry().registerResource(Jam.class, "Jam", Jam.CODEC);
 
     getChunkStoreRegistry().registerSystem(new MouseClickSystem());
 
@@ -81,14 +79,11 @@ public class Plugin extends JavaPlugin {
                     var cref = cs.getChunkReference(chuncc);
                     if (cref == null) return;
 
-                    var actualStore = cref.getStore();
-
-                    if (actualStore.getComponent(cref, getJamType()) == null)
-                      actualStore.putComponent(cref, getJamType(), new JamComponent());
-
-                    actualStore.invoke(
-                        cref,
-                        new MouseClickEvent(new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType));
+                    cref.getStore()
+                        .invoke(
+                            cref,
+                            new MouseClickEvent(
+                                new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType));
                   });
             }
           }
