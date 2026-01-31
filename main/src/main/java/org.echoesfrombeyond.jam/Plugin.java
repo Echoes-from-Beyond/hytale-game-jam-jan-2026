@@ -1,8 +1,22 @@
 package org.echoesfrombeyond.jam;
 
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.vector.Vector3d;
+import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.protocol.*;
+import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.WorldConfig;
+import java.nio.file.Path;
+
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NullMarked;
 
 @SuppressWarnings("unused")
@@ -14,6 +28,97 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
-    var universe = Universe.get();
+    getEventRegistry()
+        .registerGlobal(PlayerReadyEvent.class, ready -> {
+          var player = ready.getPlayer();
+          var world = player.getWorld();
+          if (world == null) return;
+
+          world.execute(() -> {
+            var ref = player.getReference();
+            if (ref == null) return;
+
+            var store = ref.getStore();
+            var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+            if (playerRef == null) return;
+
+            if (!world.getName().equals("World-" + playerRef.getUuid())) leaveSimWorld(playerRef);
+            else joinSimWorld(playerRef);
+          });
+        });
+
+    getEventRegistry()
+        .registerGlobal(
+            PlayerConnectEvent.class,
+            connect -> {
+              var universe = Universe.get();
+              var uuid = connect.getPlayerRef().getUuid();
+              var name = "World-" + uuid;
+
+              var existing = universe.getWorld(name);
+              if (existing != null) {
+                var playerRef = universe.getPlayer(uuid);
+                if (playerRef == null) return;
+
+                sendToOwnWorld(playerRef, existing);
+                return;
+              }
+
+              universe
+                  .makeWorld(name, Path.of("universe", "worlds", name), genWorldConfig())
+                  .thenAccept(
+                      world -> {
+                        var playerRef = universe.getPlayer(uuid);
+                        if (playerRef == null) return;
+
+                        sendToOwnWorld(playerRef, world);
+                      });
+            });
+  }
+
+  private static void leaveSimWorld(PlayerRef ref) {
+    ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, false, null));
+  }
+
+  private static void joinSimWorld(PlayerRef ref) {
+    ServerCameraSettings settings = new ServerCameraSettings();
+    settings.positionLerpSpeed = 0.2f;
+    settings.rotationLerpSpeed = 0.2f;
+    settings.distance = 20.0f;
+    settings.displayCursor = true;
+    settings.isFirstPerson = false;
+    settings.movementForceRotationType = MovementForceRotationType.Custom;
+    settings.movementForceRotation = new Direction(-0.7853981634f, 0.0f, 0.0f);  // 45° right
+    settings.eyeOffset = true;
+    settings.positionDistanceOffsetType = PositionDistanceOffsetType.DistanceOffset;
+    settings.rotationType = RotationType.Custom;
+    settings.rotation = new Direction(0.0f, -1.5707964f, 0.0f);  // Look straight down
+    settings.mouseInputType = MouseInputType.LookAtPlane;
+    settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);       // Ground plane
+
+    ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
+  }
+
+  private WorldConfig genWorldConfig() {
+    return new WorldConfig();
+  }
+
+  public static void sendToOwnWorld(PlayerRef playerRef, World target) {
+    var currentUuid = playerRef.getWorldUuid();
+    if (currentUuid == null) return;
+
+    var current = Universe.get().getWorld(currentUuid);
+    if (current == null) return;
+
+    current.execute(() -> {
+      Ref<EntityStore> ref = playerRef.getReference();
+      if (ref == null) return;
+
+      ref.getStore().addComponent(
+          ref,
+          Teleport.getComponentType(),
+          new Teleport(target, new Vector3d(0, 50, 0), new Vector3f(0, 0, 0))
+      );
+    });
   }
 }

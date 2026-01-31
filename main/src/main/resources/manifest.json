@@ -1,0 +1,26 @@
+{
+  "Group": "org.echoesfrombeyond",
+  "Name": "GameJam",
+  "Version": "0.1.0",
+  "Description": "Game jam.",
+  "Authors": [
+    {
+      "Name": "Kyle",
+      "Email": "chemky2000@gmail.com",
+      "Url": null
+    },
+    {
+      "Name": "Cobrinthine",
+      "Email": null,
+      "Url": null
+    }
+  ],
+  "Website": null,
+  "Main": "org.echoesfrombeyond.jam.Plugin",
+  "ServerVersion": "*",
+  "IncludesAssetPack": true,
+  "DependsOn": {
+    "Hytale:EntityModule": "*",
+    "Hytale:BlockModule": "*"
+  }
+}
