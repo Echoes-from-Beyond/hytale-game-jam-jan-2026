@@ -1,8 +1,8 @@
 {
   "Group": "org.echoesfrombeyond",
-  "Name": "GameJam",
+  "Name": "Scrapvengers",
   "Version": "0.1.0",
-  "Description": "Game jam.",
+  "Description": "A colony simulator themed around an expedition to a fallen magitech metropolis.",
   "Authors": [
     {
       "Name": "Kyle",
