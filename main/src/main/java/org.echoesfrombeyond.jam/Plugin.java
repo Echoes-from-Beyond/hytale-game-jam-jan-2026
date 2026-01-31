@@ -1,16 +1,18 @@
 package org.echoesfrombeyond.jam;
 
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.*;
 import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
 import com.hypixel.hytale.protocol.packets.player.MouseInteraction;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
-import com.hypixel.hytale.server.core.io.PacketHandler;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
-import com.hypixel.hytale.server.core.io.adapter.PacketWatcher;
+import com.hypixel.hytale.server.core.io.adapter.PlayerPacketWatcher;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -18,27 +20,41 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @SuppressWarnings("unused")
 @NullMarked
 public class Plugin extends JavaPlugin {
+  private static final Vector3d VEC = new Vector3d(684, 148, -2334);
+
+  private static @Nullable ComponentType<ChunkStore, JamComponent> JAM_TYPE;
+
+  public static ComponentType<ChunkStore, JamComponent> getJamType() {
+    assert JAM_TYPE != null;
+    return JAM_TYPE;
+  }
+
   public Plugin(JavaPluginInit init) {
     super(init);
   }
 
   @Override
   protected void setup() {
-    getChunkStoreRegistry()
-        .registerComponent(JamComponent.class, "Jam_Component", JamComponent.CODEC);
+    JAM_TYPE =
+        getChunkStoreRegistry()
+            .registerComponent(JamComponent.class, "Jam_Component", JamComponent.CODEC);
+
+    getChunkStoreRegistry().registerSystem(new MouseClickSystem());
 
     PacketAdapters.registerInbound(
-        new PacketWatcher() {
+        new PlayerPacketWatcher() {
           @Override
-          public void accept(PacketHandler packetHandler, Packet packet) {
+          public void accept(PlayerRef playerRef, Packet packet) {
             if (packet instanceof MouseInteraction interaction) {
               var in = interaction.worldInteraction;
               if (in == null) return;
@@ -46,7 +62,33 @@ public class Plugin extends JavaPlugin {
               var bp = in.blockPosition;
               if (bp == null) return;
 
-              System.out.println("Player clicked block " + bp.x + ", " + bp.y + ", " + bp.z);
+              var mb = interaction.mouseButton;
+              if (mb == null) return;
+
+              var worldUuid = playerRef.getWorldUuid();
+              if (worldUuid == null) return;
+              var world = Universe.get().getWorld(worldUuid);
+              if (world == null) return;
+
+              world.execute(
+                  () -> {
+                    // counterstrike reference?
+                    var cs = world.getChunkStore();
+                    var chuncc =
+                        ChunkUtil.indexChunkFromBlock(
+                            (int) Math.floor(VEC.x), (int) Math.floor(VEC.z));
+
+                    var cref = cs.getChunkReference(chuncc);
+                    if (cref == null) return;
+
+                    var actualStore = cref.getStore();
+
+                    actualStore.ensureComponent(cref, getJamType());
+
+                    actualStore.invoke(
+                        cref,
+                        new MouseClickEvent(new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType));
+                  });
             }
           }
         });
@@ -150,8 +192,6 @@ public class Plugin extends JavaPlugin {
 
     ref.getStore()
         .addComponent(
-            ref,
-            Teleport.getComponentType(),
-            new Teleport(new Vector3d(684, 148, -2334), new Vector3f(0, 0, 0)));
+            ref, Teleport.getComponentType(), new Teleport(VEC.clone(), new Vector3f(0, 0, 0)));
   }
 }
