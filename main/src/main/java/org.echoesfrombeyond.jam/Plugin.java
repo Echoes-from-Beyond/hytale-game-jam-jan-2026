@@ -120,7 +120,10 @@ public class Plugin extends JavaPlugin {
   }
 
   private WorldConfig genWorldConfig() {
-    return new WorldConfig();
+    var conf = new WorldConfig();
+    conf.setGameTimePaused(true);
+    conf.setSeed(1769837468940L);
+    return conf;
   }
 
   public static void sendToOwnWorld(PlayerRef playerRef, World target) {
@@ -137,7 +140,7 @@ public class Plugin extends JavaPlugin {
       ref.getStore().addComponent(
           ref,
           Teleport.getComponentType(),
-          new Teleport(target, new Vector3d(0, 50, 0), new Vector3f(0, 0, 0))
+          new Teleport(target, new Vector3d(684, 148, -2334), new Vector3f(0, 0, 0))
       );
     });
   }
