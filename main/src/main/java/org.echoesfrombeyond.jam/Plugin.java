@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings("unused")
 @NullMarked
 public class Plugin extends JavaPlugin {
-  private static final Vector3d VEC = new Vector3d(684, 148, -2334);
+  private static final Vector3d VEC = new Vector3d(1127, 143, -2685);
 
   private static @Nullable ComponentType<ChunkStore, JamComponent> JAM_TYPE;
 
@@ -154,16 +154,17 @@ public class Plugin extends JavaPlugin {
     ServerCameraSettings settings = new ServerCameraSettings();
     settings.positionLerpSpeed = 0.2f;
     settings.rotationLerpSpeed = 0.2f;
-    settings.distance = 20.0f;
+    settings.distance = 25.0f;
     settings.displayCursor = true;
     settings.isFirstPerson = false;
     settings.movementForceRotationType = MovementForceRotationType.Custom;
     settings.movementForceRotation = new Direction(-0.7853981634f, 0.0f, 0.0f);
     settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
     settings.eyeOffset = true;
+    settings.positionOffset = new Position(-7.0, 5.0, -7.0);
     settings.positionDistanceOffsetType = PositionDistanceOffsetType.DistanceOffset;
     settings.rotationType = RotationType.Custom;
-    settings.rotation = new Direction(0.0f, -1.5707964f, 0.0f);
+    settings.rotation = new Direction(-2.7f, -0.75f, 0.0f);
     settings.mouseInputType = MouseInputType.LookAtTargetEntity;
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
 
