@@ -83,7 +83,8 @@ public class Plugin extends JavaPlugin {
 
                     var actualStore = cref.getStore();
 
-                    actualStore.ensureComponent(cref, getJamType());
+                    if (actualStore.getComponent(cref, getJamType()) == null)
+                      actualStore.putComponent(cref, getJamType(), new JamComponent());
 
                     actualStore.invoke(
                         cref,

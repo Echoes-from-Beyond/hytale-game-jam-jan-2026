@@ -22,7 +22,10 @@ public class MouseClickSystem extends EntityEventSystem<ChunkStore, MouseClickEv
       Store<ChunkStore> store,
       CommandBuffer<ChunkStore> commandBuffer,
       MouseClickEvent mouseClickEvent) {
-    System.out.println("JAM");
+    var jam = archetypeChunk.getComponent(i, Plugin.getJamType());
+    assert jam != null;
+
+    System.out.println(jam.clickCounter++);
   }
 
   @Override
