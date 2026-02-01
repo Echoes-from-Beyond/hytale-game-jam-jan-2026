@@ -4,6 +4,7 @@ import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
+import com.hypixel.hytale.protocol.MouseButtonType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -23,10 +24,15 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
       CommandBuffer<EntityStore> buffer,
       MouseClickEvent event) {
 
-    var playerRef = chunk.getComponent(i, PlayerRef.getComponentType());
     var world = buffer.getExternalData().getWorld();
     world.execute(
         () -> {
+          if (event.type == MouseButtonType.Right) {
+            // dismiss the current selection with rclick
+            buffer.tryRemoveComponent(chunk.getReferenceTo(i), Plugin.getPlaceType());
+            return;
+          }
+
           JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
           Vector3i clickLocation = event.pos;
           JamSave.Building clickedBuilding = null;

@@ -25,7 +25,9 @@ public class OpenSelectBuildingUI extends SimpleInstantInteraction {
     var ref = context.getEntity();
     var player = buffer.getComponent(ref, Player.getComponentType());
     var playerRef = buffer.getComponent(ref, PlayerRef.getComponentType());
-    if (player == null || playerRef == null || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
+    if (player == null
+        || playerRef == null
+        || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
 
     player.getPageManager().openCustomPage(ref, ref.getStore(), new ChooseBuildingUI(playerRef));
   }
