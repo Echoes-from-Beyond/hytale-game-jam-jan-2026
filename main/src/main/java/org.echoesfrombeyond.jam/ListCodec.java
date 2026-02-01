@@ -112,7 +112,6 @@ public class ListCodec<V, S extends List<V>> implements Codec<List<V>>, WrappedC
     ArraySchema schema = new ArraySchema();
     schema.setTitle("List");
     schema.setItem(context.refDefinition(this.codec));
-    schema.setUniqueItems(true);
     return schema;
   }
 
