@@ -29,6 +29,10 @@ public class JamSave implements Resource<ChunkStore> {
     BuildingType(String prefabAsset) {
       this.prefabAsset = prefabAsset;
     }
+
+    public String getPrefabAsset() {
+      return prefabAsset;
+    }
   }
 
   public static class Building {
