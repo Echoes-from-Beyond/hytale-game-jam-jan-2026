@@ -57,6 +57,9 @@ public class PlacePreviewSystem extends EntityTickingSystem<EntityStore> {
 
           for (int x = newMin.x; x <= newMax.x; x++) {
             for (int z = newMin.z; z <= newMax.z; z++) {
+              if ((x == Plugin.VEC.x || x == Plugin.VEC.x - 1 || x == Plugin.VEC.x + 1)
+                  && (z == Plugin.VEC.z || z == Plugin.VEC.z - 1 || z == Plugin.VEC.z + 1))
+                continue;
               var cur = world.getBlockType(x, newMin.y, z);
               if (cur == null || !cur.getId().equals("Empty")) continue;
 
