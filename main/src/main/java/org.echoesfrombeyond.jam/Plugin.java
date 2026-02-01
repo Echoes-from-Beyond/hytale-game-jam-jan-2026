@@ -14,6 +14,8 @@ import com.hypixel.hytale.server.core.asset.AssetModule;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
+import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
@@ -75,6 +77,8 @@ public class Plugin extends JavaPlugin {
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
     getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
+    getEntityStoreRegistry().registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
+    getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});
 
     PacketAdapters.registerInbound(
         (PlayerPacketWatcher)
