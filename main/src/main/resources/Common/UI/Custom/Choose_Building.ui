@@ -4,4 +4,12 @@ $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
   Anchor: (Width: 740, Height: 480);
+
+    // based on the barter UI; I think that dynamically generated items can only be added to a Group
+    // TODO: @VegetalDev change this to a dropdown-style list if you know how lol
+    Group #BuildingGroup {
+      LayoutMode: TopScrolling;
+    }
 }
+
+

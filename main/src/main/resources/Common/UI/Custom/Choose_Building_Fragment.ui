@@ -1,0 +1,34 @@
+$C = "Common.ui";
+
+Group {
+      ItemSlotButton #BuildingSelector {
+          Anchor: (Full: 0);
+          LayoutMode: Full;
+          Padding: 2;
+          Style: (
+            Default: (
+              Background: #252f3a,
+            ),
+            Hovered: (
+              Background: #c9a050,
+            ),
+            Pressed: (
+              Background: #a08040,
+            ),
+            Disabled: (
+              Background: #1a1e24,
+            ),
+              Sounds: $C.@ButtonSounds,
+            );
+          Label #BuildingName {
+            Anchor: (Full: 0);
+            Style: (
+              FontSize: 12,
+              TextColor: #ffffff,
+              HorizontalAlignment: Center,
+              VerticalAlignment: Center,
+              RenderBold: true,
+            );
+          }
+        }
+}

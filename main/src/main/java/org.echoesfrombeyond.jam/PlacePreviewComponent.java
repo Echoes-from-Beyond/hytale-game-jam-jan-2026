@@ -15,6 +15,7 @@ public class PlacePreviewComponent implements Component<EntityStore> {
 
   /** Ignore these, they're only used by the preview system. */
   public @Nullable Vector3i oldMin;
+
   public @Nullable Vector3i oldMax;
 
   /** Block the cursor is hovering over. */
