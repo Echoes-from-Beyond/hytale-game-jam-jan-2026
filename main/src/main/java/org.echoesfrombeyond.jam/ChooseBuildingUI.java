@@ -15,12 +15,24 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class ChooseBuildingUI
     extends InteractiveCustomUIPage<ChooseBuildingUI.ChooseBuildingUIData> {
-  private final JamSave.BuildingType[] BUILDINGS = JamSave.BuildingType.values();
+  private final ArrayList<JamSave.BuildingType> BUILDINGS = addPermittedBuildings();
+
+  private ArrayList<JamSave.BuildingType> addPermittedBuildings() {
+      ArrayList<JamSave.BuildingType> builds = new ArrayList<>(Arrays.asList(JamSave.BuildingType.values()));
+      builds.remove(JamSave.BuildingType.RadioTower);
+      builds.remove(JamSave.BuildingType.CommandTent);
+      builds.remove(JamSave.BuildingType.None);
+
+      return builds;
+  }
 
   public ChooseBuildingUI(PlayerRef playerRef) {
     super(
@@ -37,18 +49,19 @@ public class ChooseBuildingUI
       Store<EntityStore> store) {
     commandBuilder.append("Choose_Building.ui");
 
-    for (int i = 0; i < BUILDINGS.length; i++) {
+    for (int i = 0; i < BUILDINGS.size(); i++) {
       // why are string templates not released yet smh oracle
       String select = "#BuildingGroup[" + i + "]";
+      JamSave.BuildingType build = BUILDINGS.get(i);
 
       // why can't you generate a list in a single UI file lmao
       commandBuilder.append("#BuildingGroup", "Choose_Building_Fragment.ui");
-      commandBuilder.set(select + " #BuildingName.Text", BUILDINGS[i].name());
+      commandBuilder.set(select + " #BuildingName.Text", build.name());
 
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           select + " #BuildingSelector",
-          EventData.of("BuildingIndex", String.valueOf(i)),
+          EventData.of("BuildingIndex", String.valueOf(build.ordinal())),
           false);
     }
   }
@@ -66,6 +79,7 @@ public class ChooseBuildingUI
     }
 
     player.getPageManager().setPage(ref, store, Page.None);
+
   }
 
   public static class ChooseBuildingUIData {
