@@ -13,6 +13,7 @@ public class PlacePreviewComponent implements Component<EntityStore> {
   /** The building that will be placed. */
   public JamSave.BuildingType building;
 
+  /** Ignore these, they're only used by the preview system. */
   public @Nullable Vector3i oldMin;
   public @Nullable Vector3i oldMax;
 
