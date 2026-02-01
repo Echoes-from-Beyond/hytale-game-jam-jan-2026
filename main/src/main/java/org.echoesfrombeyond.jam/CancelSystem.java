@@ -11,7 +11,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public abstract class CancelSystem<T extends CancellableEcsEvent> extends EntityEventSystem<EntityStore, T> {
+public abstract class CancelSystem<T extends CancellableEcsEvent>
+    extends EntityEventSystem<EntityStore, T> {
   public CancelSystem(Class<T> cls) {
     super(cls);
   }

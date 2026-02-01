@@ -18,9 +18,11 @@ import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.SwitchActiveSlotEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketWatcher;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -77,8 +79,11 @@ public class Plugin extends JavaPlugin {
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
     getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
-    getEntityStoreRegistry().registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
+    getEntityStoreRegistry()
+        .registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
     getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});
+    getCodecRegistry(Interaction.CODEC)
+        .register("Open_Select_Building", OpenSelectBuildingUI.class, OpenSelectBuildingUI.CODEC);
 
     PacketAdapters.registerInbound(
         (PlayerPacketWatcher)
@@ -209,15 +214,19 @@ public class Plugin extends JavaPlugin {
     ref.getPacketHandler().writeNoCache(new SetServerCamera(ClientCameraView.Custom, false, null));
   }
 
-  private static void joinSimWorld(PlayerRef ref) {
-    setPos(ref);
+  private static void joinSimWorld(PlayerRef playerRef) {
+    setPos(playerRef);
 
-    var r = ref.getReference();
-    if (r != null) {
-      var player = r.getStore().getComponent(r, Player.getComponentType());
-      if (player != null) player.getHudManager().setCustomHud(ref, new SimHud(ref));
+    var ref = playerRef.getReference();
+    if (ref != null) {
+      var player = ref.getStore().getComponent(ref, Player.getComponentType());
+      if (player != null) {
+        var inventory = player.getInventory();
+        inventory.getHotbar().setItemStackForSlot((short) 0, new ItemStack("Open_Select_Building"));
+        player.getHudManager().setCustomHud(playerRef, new SimHud(playerRef));
+      }
 
-      r.getStore().invoke(r, new HudUpdateSystem.Event());
+      ref.getStore().invoke(ref, new HudUpdateSystem.Event());
     }
 
     ServerCameraSettings settings = new ServerCameraSettings();
@@ -236,7 +245,8 @@ public class Plugin extends JavaPlugin {
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
     settings.sendMouseMotion = true;
 
-    ref.getPacketHandler()
+    playerRef
+        .getPacketHandler()
         .writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
   }
 
