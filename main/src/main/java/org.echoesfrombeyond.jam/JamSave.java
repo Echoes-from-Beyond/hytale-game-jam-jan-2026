@@ -4,10 +4,11 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.EnumCodec;
-import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.component.Resource;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
+import java.util.ArrayList;
+import java.util.List;
 import org.jspecify.annotations.NullMarked;
 
 /** Data that should be persistent across restarts */
@@ -66,8 +67,8 @@ public class JamSave implements Resource<ChunkStore> {
           .add()
           .build();
 
-  public static final ArrayCodec<Building> BUILDING_ARRAY_CODEC =
-      new ArrayCodec<>(BUILDING_CODEC, Building[]::new);
+  public static final Codec<List<Building>> BUILDING_LIST_CODEC =
+      new ListCodec<>(BUILDING_CODEC, ArrayList::new, false);
 
   public static final BuilderCodec<JamSave> CODEC =
       BuilderCodec.builder(JamSave.class, JamSave::new)
@@ -92,7 +93,7 @@ public class JamSave implements Resource<ChunkStore> {
               (self) -> self.scrap)
           .add()
           .append(
-              new KeyedCodec<>("Buildings", BUILDING_ARRAY_CODEC),
+              new KeyedCodec<>("Buildings", BUILDING_LIST_CODEC),
               (self, value) -> self.buildings = value,
               (self) -> self.buildings)
           .add()
@@ -102,10 +103,10 @@ public class JamSave implements Resource<ChunkStore> {
   public int food;
   public int water;
   public int scrap;
-  public Building[] buildings;
+  public List<Building> buildings;
 
   public JamSave() {
-    this.buildings = new Building[0];
+    this.buildings = new ArrayList<>();
   }
 
   public JamSave(JamSave other) {
@@ -113,11 +114,10 @@ public class JamSave implements Resource<ChunkStore> {
     this.food = other.food;
     this.water = other.water;
     this.scrap = other.scrap;
-    this.buildings = new Building[other.buildings.length];
+    this.buildings = new ArrayList<>(other.buildings.size());
 
-    for (int i = 0; i < buildings.length; i++) {
-      this.buildings[i] = new Building(other.buildings[i]);
-    }
+    for (int i = 0; i < other.buildings.size(); i++)
+      this.buildings.add(new Building(other.buildings.get(i)));
   }
 
   @Override
