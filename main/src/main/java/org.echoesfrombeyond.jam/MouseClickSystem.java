@@ -1,15 +1,16 @@
 package org.echoesfrombeyond.jam;
 
-import com.hypixel.hytale.component.Archetype;
-import com.hypixel.hytale.component.ArchetypeChunk;
-import com.hypixel.hytale.component.CommandBuffer;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
+import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.List;
 
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
@@ -23,7 +24,25 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
       ArchetypeChunk<EntityStore> chunk,
       Store<EntityStore> store,
       CommandBuffer<EntityStore> buffer,
-      MouseClickEvent event) {}
+      MouseClickEvent event) {
+
+      var playerRef = chunk.getComponent(i, PlayerRef.getComponentType());
+      var world = buffer.getExternalData().getWorld();
+      world.execute(() -> {
+          JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
+          Vector3i clickLocation = event.pos;
+          JamSave.Building clickedBuilding = null;
+          for(JamSave.Building build : save.buildings) {
+              if(clickLocation.x >= build.min.x
+              && clickLocation.z >= build.min.z
+              && clickLocation.x <= build.max.x
+              && clickLocation.z <= build.max.z) {
+                  clickedBuilding = build;
+                  break;
+              }
+          }
+      });
+  }
 
   @Override
   public Query<EntityStore> getQuery() {
