@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.prefab.selection.buffer.PrefabBufferUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
+import java.util.Arrays;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -39,6 +40,7 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
           }
 
           var placement = chunk.getComponent(i, Plugin.getPlaceType());
+          JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
           if (placement != null) {
             JamSave.BuildingType target = placement.building;
@@ -53,10 +55,30 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
 
             PrefabUtil.paste(
                 prefabBuffer, world, event.pos, Rotation.None, true, new FastRandom(), buffer);
+
+            var res =
+                Arrays.stream(JamSave.BuildingType.values())
+                    .filter(bt -> bt.name().equalsIgnoreCase(target.name()))
+                    .findFirst();
+            if (res.isEmpty()) return;
+
+            JamSave.Building building = new JamSave.Building();
+            building.type = res.get();
+            building.min =
+                new Vector3i(
+                    event.pos.x + prefabBuffer.getMinX(),
+                    event.pos.y + prefabBuffer.getMinY(),
+                    event.pos.z + prefabBuffer.getMinZ());
+            building.max =
+                new Vector3i(
+                    event.pos.x + prefabBuffer.getMaxX(),
+                    event.pos.y + prefabBuffer.getMaxY(),
+                    event.pos.z + prefabBuffer.getMaxZ());
+
+            save.buildings.add(building);
             return;
           }
 
-          JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
           Vector3i clickLocation = event.pos;
           JamSave.Building clickedBuilding = null;
           for (JamSave.Building build : save.buildings) {
@@ -70,6 +92,11 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
           }
           // TODO: interact with buildings otherwise
 
+          if (clickedBuilding == null) {
+            return;
+          }
+
+          System.out.println("I clicked on a building!");
         });
   }
 
