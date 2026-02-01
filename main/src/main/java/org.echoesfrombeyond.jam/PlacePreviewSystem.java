@@ -9,6 +9,7 @@ import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.prefab.PrefabStore;
+import com.hypixel.hytale.server.core.prefab.selection.standard.BlockSelection;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NullMarked;
@@ -33,29 +34,10 @@ public class PlacePreviewSystem extends EntityTickingSystem<EntityStore> {
         PrefabStore.get().getAssetPrefabFromAnyPack(place.previewPrefabName + ".prefab.json");
     if (prefab == null) return;
 
-    int[] minX = new int[] {Integer.MAX_VALUE};
-    int[] maxX = new int[] {Integer.MIN_VALUE};
+    computeSelectionAreaIfNecessary(prefab);
 
-    int[] minZ = new int[] {Integer.MAX_VALUE};
-    int[] maxZ = new int[] {Integer.MIN_VALUE};
-
-    prefab.forEachBlock(
-        (x, ignored, z, holder) -> {
-          var asset = BlockType.getAssetMap().getAsset(holder.blockId());
-          if (asset == null) return;
-
-          var id = asset.getId();
-          if (id.equals("Empty")) return;
-
-          if (x < minX[0]) minX[0] = x;
-          if (z < minZ[0]) minZ[0] = z;
-
-          if (x > maxX[0]) maxX[0] = x;
-          if (z > maxZ[0]) maxZ[0] = z;
-        });
-
-    var start = new Vector3i(minX[0], 0, minZ[0]);
-    var end = new Vector3i(maxX[0], 0, maxZ[0]);
+    var start = prefab.getSelectionMin().clone();
+    var end = prefab.getSelectionMax().clone();
 
     var diff = end.clone().subtract(start);
     var mid = new Vector3i(diff.x / 2, 0, diff.z / 2);
@@ -103,5 +85,38 @@ public class PlacePreviewSystem extends EntityTickingSystem<EntityStore> {
         world.setBlock(x, min.y, z, "Empty");
       }
     }
+  }
+
+  public static void computeSelectionAreaIfNecessary(BlockSelection selection) {
+    if (selection.hasSelectionBounds()) return;
+
+    int[] minX = new int[] {Integer.MAX_VALUE};
+    int[] maxX = new int[] {Integer.MIN_VALUE};
+
+    int[] minY = new int[] {Integer.MAX_VALUE};
+    int[] maxY = new int[] {Integer.MIN_VALUE};
+
+    int[] minZ = new int[] {Integer.MAX_VALUE};
+    int[] maxZ = new int[] {Integer.MIN_VALUE};
+
+    selection.forEachBlock(
+        (x, y, z, holder) -> {
+          var asset = BlockType.getAssetMap().getAsset(holder.blockId());
+          if (asset == null) return;
+
+          var id = asset.getId();
+          if (id.equals("Empty")) return;
+
+          if (x < minX[0]) minX[0] = x;
+          if (y < minY[0]) minY[0] = y;
+          if (z < minZ[0]) minZ[0] = z;
+
+          if (x > maxX[0]) maxX[0] = x;
+          if (y > maxY[0]) maxY[0] = y;
+          if (z > maxZ[0]) maxZ[0] = z;
+        });
+
+    selection.setSelectionArea(
+        new Vector3i(minX[0], minY[0], minZ[0]), new Vector3i(maxX[0], maxY[0], maxZ[0]));
   }
 }
