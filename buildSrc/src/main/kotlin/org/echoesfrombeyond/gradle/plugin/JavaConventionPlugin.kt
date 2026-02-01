@@ -58,12 +58,6 @@ class JavaConventionPlugin : Plugin<Project> {
             it.useJUnitPlatform()
         }
 
-        target.tasks.withType(Jar::class.java).configureEach {
-            it.from(target.rootProject.layout.projectDirectory.file("LICENSE").asFile) { spec ->
-                spec.into("META-INF")
-            }
-        }
-
         target.tasks.withType(JavaCompile::class.java).configureEach {
             it.options.encoding = "UTF-8"
         }

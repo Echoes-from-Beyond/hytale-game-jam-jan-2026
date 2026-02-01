@@ -1,5 +1,7 @@
 package org.echoesfrombeyond.jam;
 
+import com.hypixel.hytale.assetstore.AssetPack;
+import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.ResourceType;
 import com.hypixel.hytale.math.vector.Vector3d;
@@ -8,6 +10,8 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.*;
 import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
 import com.hypixel.hytale.protocol.packets.player.MouseInteraction;
+import com.hypixel.hytale.server.core.asset.AssetModule;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
@@ -32,13 +36,24 @@ import org.jspecify.annotations.Nullable;
 @SuppressWarnings("unused")
 @NullMarked
 public class Plugin extends JavaPlugin {
-  private static final Vector3d VEC = new Vector3d(1127, 143, -2685);
+  public static final Vector3d VEC = new Vector3d(1127, 143, -2685);
 
-  private static @Nullable ResourceType<ChunkStore, Jam> JAM_TYPE;
+  private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
+  private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
+  private static @Nullable AssetPack ASSET_PACK;
 
-  public static ResourceType<ChunkStore, Jam> getJamType() {
+  public static ResourceType<ChunkStore, JamSave> getJamType() {
     assert JAM_TYPE != null;
     return JAM_TYPE;
+  }
+
+  public static ComponentType<EntityStore, PlacePreviewComponent> getPlaceType() {
+    assert PLACE_TYPE != null;
+    return PLACE_TYPE;
+  }
+
+  public static AssetPack getAssetPack() {
+    return AssetModule.get().getAssetPack("org.echoesfrombeyond:Scrapvengers");
   }
 
   public Plugin(JavaPluginInit init) {
@@ -51,10 +66,15 @@ public class Plugin extends JavaPlugin {
 
   @Override
   protected void setup() {
-    JAM_TYPE = getChunkStoreRegistry().registerResource(Jam.class, "Jam", Jam.CODEC);
+    JAM_TYPE = getChunkStoreRegistry().registerResource(JamSave.class, "Jam", JamSave.CODEC);
+    PLACE_TYPE =
+        getEntityStoreRegistry()
+            .registerComponent(PlacePreviewComponent.class, PlacePreviewComponent::new);
 
-    getChunkStoreRegistry().registerSystem(new MouseClickSystem());
+    getEntityStoreRegistry().registerSystem(new MouseClickSystem());
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
+    getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
+    getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
 
     PacketAdapters.registerInbound(
         (PlayerPacketWatcher)
@@ -66,24 +86,53 @@ public class Plugin extends JavaPlugin {
                 var bp = in.blockPosition;
                 if (bp == null) return;
 
-                var mb = interaction.mouseButton;
-                if (mb == null) return;
-
                 var worldUuid = playerRef.getWorldUuid();
                 if (worldUuid == null) return;
+
                 var world = Universe.get().getWorld(worldUuid);
                 if (world == null) return;
 
+                var mb = interaction.mouseButton;
+                if (mb == null) {
+                  // Mouse hover position update
+                  world.execute(
+                      () -> {
+                        var refRef = playerRef.getReference();
+                        if (refRef == null) return;
+
+                        var place = refRef.getStore().getComponent(refRef, getPlaceType());
+                        if (place == null) return;
+
+                        var vbp = new Vector3i(bp.x, bp.y, bp.z);
+
+                        BlockType type;
+                        while ((type = world.getBlockType(vbp)) != null
+                            && (type.getId().equals(PlacePreviewSystem.PREVIEW_BLOCK_ID)
+                                || type.getId().equals("Empty"))) {
+                          vbp.subtract(0, 1, 0);
+                        }
+
+                        if (!vbp.equals(place.cursorHoverPos)) {
+                          place.cursorHoverPos.assign(vbp);
+                          place.dirty = true;
+                        }
+                      });
+                  return;
+                }
+
+                if (mb.state != MouseButtonState.Pressed) return;
+
                 world.execute(
-                    () ->
-                        world
-                            .getChunkStore()
-                            .getStore()
-                            .invoke(
-                                new MouseClickEvent(
-                                    playerRef.getUuid(),
-                                    new Vector3i(bp.x, bp.y, bp.z),
-                                    mb.mouseButtonType)));
+                    () -> {
+                      var refRef = playerRef.getReference();
+                      if (refRef == null) return;
+
+                      var store = world.getEntityStore();
+                      var storeStore = store.getStore();
+                      storeStore.invoke(
+                          refRef,
+                          new MouseClickEvent(new Vector3i(bp.x, bp.y, bp.z), mb.mouseButtonType));
+                    });
               }
             });
 
@@ -171,8 +220,6 @@ public class Plugin extends JavaPlugin {
     settings.distance = 25.0f;
     settings.displayCursor = true;
     settings.isFirstPerson = false;
-    settings.movementForceRotationType = MovementForceRotationType.Custom;
-    settings.movementForceRotation = new Direction(-0.7853981634f, 0.0f, 0.0f);
     settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
     settings.eyeOffset = true;
     settings.positionOffset = new Position(-7.0, 5.0, -7.0);
@@ -181,6 +228,7 @@ public class Plugin extends JavaPlugin {
     settings.rotation = new Direction(-2.7f, -0.75f, 0.0f);
     settings.mouseInputType = MouseInputType.LookAtTargetEntity;
     settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
+    settings.sendMouseMotion = true;
 
     ref.getPacketHandler()
         .writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));

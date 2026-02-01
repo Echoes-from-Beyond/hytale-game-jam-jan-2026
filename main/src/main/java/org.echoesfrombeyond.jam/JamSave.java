@@ -7,10 +7,11 @@ import com.hypixel.hytale.component.Resource;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import org.jspecify.annotations.NullMarked;
 
+/** Data that should be persistent across restarts */
 @NullMarked
-public class Jam implements Resource<ChunkStore> {
-  public static final BuilderCodec<Jam> CODEC =
-      BuilderCodec.builder(Jam.class, Jam::new)
+public class JamSave implements Resource<ChunkStore> {
+  public static final BuilderCodec<JamSave> CODEC =
+      BuilderCodec.builder(JamSave.class, JamSave::new)
           .append(
               new KeyedCodec<>("Colonists", Codec.INTEGER),
               (self, value) -> self.colonists = value,
@@ -38,9 +39,9 @@ public class Jam implements Resource<ChunkStore> {
   public int water;
   public int scrap;
 
-  public Jam() {}
+  public JamSave() {}
 
-  public Jam(Jam other) {
+  public JamSave(JamSave other) {
     this.colonists = other.colonists;
     this.food = other.food;
     this.water = other.water;
@@ -50,6 +51,6 @@ public class Jam implements Resource<ChunkStore> {
   @Override
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   public Resource<ChunkStore> clone() {
-    return new Jam(this);
+    return new JamSave(this);
   }
 }
