@@ -74,7 +74,7 @@ public class ChooseBuildingUI
     Player player =
         playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
 
-    if (player == null) {
+    if (player == null || store.getComponent(ref, Plugin.getPlaceType()) != null) {
       return;
     }
 
