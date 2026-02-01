@@ -76,6 +76,10 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                     event.pos.z + prefabBuffer.getMaxZ());
 
             save.buildings.add(building);
+
+            var ref = chunk.getReferenceTo(i);
+
+            store.removeComponent(ref, Plugin.getPlaceType());
             return;
           }
 
