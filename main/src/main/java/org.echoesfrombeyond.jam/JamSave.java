@@ -18,7 +18,11 @@ public class JamSave implements Resource<ChunkStore> {
     None(""),
 
     // should use CamelCase not SHOUTY_SNAKE_CASE as per hytale convention
-    RadioTower("radio_tower");
+    CommandTent("command_tent"),
+    Farm("farm"),
+    RadioTower("radio_tower"),
+    ScavengerPort("scavenger_port"),
+    Well("well");
 
     public final String prefabAsset;
 
@@ -33,7 +37,7 @@ public class JamSave implements Resource<ChunkStore> {
     public Vector3i max;
 
     public Building() {
-      this.type = BuildingType.RadioTower;
+      this.type = BuildingType.Farm;
       this.min = new Vector3i(0, 0, 0);
       this.max = new Vector3i(0, 0, 0);
     }
