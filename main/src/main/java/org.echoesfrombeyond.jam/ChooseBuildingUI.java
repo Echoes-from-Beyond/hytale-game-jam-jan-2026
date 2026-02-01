@@ -6,6 +6,8 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.protocol.packets.interface_.Page;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -19,15 +21,6 @@ import org.jspecify.annotations.NullMarked;
 public class ChooseBuildingUI
     extends InteractiveCustomUIPage<ChooseBuildingUI.ChooseBuildingUIData> {
   private final JamSave.BuildingType[] BUILDINGS = JamSave.BuildingType.values();
-  private final ArrayList<String> LABELS = getBuildingLabels();
-
-  private ArrayList<String> getBuildingLabels() {
-    ArrayList<String> labels = new ArrayList<>();
-    for (JamSave.BuildingType b : BUILDINGS) {
-      labels.add(b.name());
-    }
-    return labels;
-  }
 
   public ChooseBuildingUI(PlayerRef playerRef) {
     super(
@@ -64,6 +57,15 @@ public class ChooseBuildingUI
   public void handleDataEvent(
       Ref<EntityStore> ref, Store<EntityStore> store, ChooseBuildingUI.ChooseBuildingUIData data) {
     System.out.println("You clicked on " + data.getBuildingIndex());
+
+    var playerRefRef = this.playerRef.getReference();
+    Player player = playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
+
+    if(player == null) {
+        return;
+    }
+
+    player.getPageManager().setPage(ref, store, Page.None);
   }
 
   public static class ChooseBuildingUIData {
