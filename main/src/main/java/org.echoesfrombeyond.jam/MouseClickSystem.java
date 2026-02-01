@@ -41,6 +41,8 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
 
           var placement = chunk.getComponent(i, Plugin.getPlaceType());
           JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
+          Vector3i clickLocation = event.pos;
+          var ref = chunk.getReferenceTo(i);
 
           if (placement != null) {
             JamSave.BuildingType target = placement.building;
@@ -53,8 +55,37 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                         .resolve("Prefabs")
                         .resolve(target.getPrefabAsset()));
 
+            Vector3i minBound =
+                new Vector3i(
+                    clickLocation.x + prefabBuffer.getMinX(),
+                    clickLocation.y + prefabBuffer.getMinY(),
+                    clickLocation.z + prefabBuffer.getMinZ());
+            Vector3i maxBound =
+                new Vector3i(
+                    clickLocation.x + prefabBuffer.getMaxX(),
+                    clickLocation.y + prefabBuffer.getMaxY(),
+                    clickLocation.z + prefabBuffer.getMaxZ());
+
+            boolean conflict = false;
+
+            for (JamSave.Building build : save.buildings) {
+              if (build.min.x >= minBound.x
+                  || build.min.z >= minBound.z
+                  || build.max.x <= maxBound.x
+                  || build.max.z <= maxBound.z) {
+                conflict = true;
+                break;
+              }
+            }
+
+            if (conflict) {
+              // TODO: warn the player about conflict
+              System.out.println("Conflict with building placement");
+              return;
+            }
+
             PrefabUtil.paste(
-                prefabBuffer, world, event.pos, Rotation.None, true, new FastRandom(), buffer);
+                prefabBuffer, world, clickLocation, Rotation.None, true, new FastRandom(), buffer);
 
             var res =
                 Arrays.stream(JamSave.BuildingType.values())
@@ -64,26 +95,15 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
 
             JamSave.Building building = new JamSave.Building();
             building.type = res.get();
-            building.min =
-                new Vector3i(
-                    event.pos.x + prefabBuffer.getMinX(),
-                    event.pos.y + prefabBuffer.getMinY(),
-                    event.pos.z + prefabBuffer.getMinZ());
-            building.max =
-                new Vector3i(
-                    event.pos.x + prefabBuffer.getMaxX(),
-                    event.pos.y + prefabBuffer.getMaxY(),
-                    event.pos.z + prefabBuffer.getMaxZ());
+            building.min = minBound;
+            building.max = maxBound;
 
             save.buildings.add(building);
-
-            var ref = chunk.getReferenceTo(i);
 
             store.removeComponent(ref, Plugin.getPlaceType());
             return;
           }
 
-          Vector3i clickLocation = event.pos;
           JamSave.Building clickedBuilding = null;
           for (JamSave.Building build : save.buildings) {
             if (clickLocation.x >= build.min.x
