@@ -14,7 +14,16 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class JamSave implements Resource<ChunkStore> {
   public enum BuildingType {
-    RADIO_TOWER,
+    None(""),
+
+    // should use CamelCase not SHOUTY_SNAKE_CASE as per hytale convention
+    RadioTower("radio_tower");
+
+    public final String prefabAsset;
+
+    BuildingType(String prefabAsset) {
+      this.prefabAsset = prefabAsset;
+    }
   }
 
   public static class Building {
@@ -23,7 +32,7 @@ public class JamSave implements Resource<ChunkStore> {
     public Vector3i max;
 
     public Building() {
-      this.type = BuildingType.RADIO_TOWER;
+      this.type = BuildingType.RadioTower;
       this.min = new Vector3i(0, 0, 0);
       this.max = new Vector3i(0, 0, 0);
     }

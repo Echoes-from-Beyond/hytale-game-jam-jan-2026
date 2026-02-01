@@ -10,8 +10,8 @@ import org.jspecify.annotations.Nullable;
 public class PlacePreviewComponent implements Component<EntityStore> {
   public boolean dirty;
 
-  /** Name without .prefab.json at the end. */
-  public String previewPrefabName;
+  /** The building that will be placed. */
+  public JamSave.BuildingType building;
 
   public @Nullable Vector3i oldMin;
   public @Nullable Vector3i oldMax;
@@ -20,13 +20,13 @@ public class PlacePreviewComponent implements Component<EntityStore> {
   public Vector3i cursorHoverPos;
 
   public PlacePreviewComponent() {
-    this.previewPrefabName = "";
+    this.building = JamSave.BuildingType.None;
     this.cursorHoverPos = new Vector3i(0, 0, 0);
   }
 
   public PlacePreviewComponent(PlacePreviewComponent other) {
     this.dirty = other.dirty;
-    this.previewPrefabName = other.previewPrefabName;
+    this.building = other.building;
     this.oldMin = other.oldMin == null ? null : other.oldMin.clone();
     this.oldMax = other.oldMax == null ? null : other.oldMax.clone();
     this.cursorHoverPos = other.cursorHoverPos.clone();

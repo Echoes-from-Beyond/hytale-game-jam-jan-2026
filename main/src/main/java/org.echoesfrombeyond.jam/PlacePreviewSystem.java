@@ -28,10 +28,10 @@ public class PlacePreviewSystem extends EntityTickingSystem<EntityStore> {
     var place = archetypeChunk.getComponent(i, Plugin.getPlaceType());
     assert place != null;
 
-    if (!place.dirty) return;
+    if (!place.dirty || place.building == JamSave.BuildingType.None) return;
 
     var prefab =
-        PrefabStore.get().getAssetPrefabFromAnyPack(place.previewPrefabName + ".prefab.json");
+        PrefabStore.get().getAssetPrefabFromAnyPack(place.building.prefabAsset + ".prefab.json");
     if (prefab == null) return;
 
     computeSelectionAreaIfNecessary(prefab);
