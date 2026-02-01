@@ -212,6 +212,8 @@ public class Plugin extends JavaPlugin {
     if (r != null) {
       var player = r.getStore().getComponent(r, Player.getComponentType());
       if (player != null) player.getHudManager().setCustomHud(ref, new SimHud(ref));
+
+      r.getStore().invoke(r, new HudUpdateSystem.Event());
     }
 
     ServerCameraSettings settings = new ServerCameraSettings();
