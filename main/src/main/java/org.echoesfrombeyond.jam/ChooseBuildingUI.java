@@ -61,7 +61,7 @@ public class ChooseBuildingUI
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           select + " #BuildingSelector",
-          EventData.of("BuildingIndex", String.valueOf(build.ordinal())),
+          EventData.of(ChooseBuildingUIData.BUILDING_NAME, build.name()),
           false);
     }
   }
@@ -69,7 +69,7 @@ public class ChooseBuildingUI
   @Override
   public void handleDataEvent(
       Ref<EntityStore> ref, Store<EntityStore> store, ChooseBuildingUI.ChooseBuildingUIData data) {
-    System.out.println("You clicked on " + data.getBuildingIndex());
+    System.out.println("You clicked on " + data.getBuildingName());
 
     var playerRefRef = this.playerRef.getReference();
     Player player = playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
@@ -80,27 +80,28 @@ public class ChooseBuildingUI
 
     player.getPageManager().setPage(ref, store, Page.None);
 
+    //store.addComponent(ref, Plugin.getPlaceType(), new PlacePreviewComponent());
   }
 
   public static class ChooseBuildingUIData {
     // BarterPage uses String instead of an integer so I'm just going to assume that this is a
     // limitation with the client
     // doesn't this use JSONs? those support numbers lol
-    static final String BUILDING_INDEX = "BuildingIndex";
+    static final String BUILDING_NAME = "BuildingName";
 
     public static final BuilderCodec<ChooseBuildingUIData> CODEC =
         BuilderCodec.builder(ChooseBuildingUIData.class, ChooseBuildingUIData::new)
             .append(
-                new KeyedCodec<>("BuildingIndex", BuilderCodec.STRING),
-                (data, s) -> data.buildingIndex = Integer.parseInt((String) s),
-                (data) -> String.valueOf(data.buildingIndex))
+                new KeyedCodec<>(BUILDING_NAME, BuilderCodec.STRING),
+                (data, s) -> data.buildingName = s,
+                (data) -> data.buildingName)
             .add()
             .build();
 
-    private int buildingIndex;
+    private String buildingName = "";
 
-    public int getBuildingIndex() {
-      return buildingIndex;
+    public String getBuildingName() {
+      return buildingName;
     }
   }
 }
