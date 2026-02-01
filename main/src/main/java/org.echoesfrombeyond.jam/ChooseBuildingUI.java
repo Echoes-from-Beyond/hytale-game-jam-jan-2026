@@ -16,8 +16,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -26,12 +24,13 @@ public class ChooseBuildingUI
   private final ArrayList<JamSave.BuildingType> BUILDINGS = addPermittedBuildings();
 
   private ArrayList<JamSave.BuildingType> addPermittedBuildings() {
-      ArrayList<JamSave.BuildingType> builds = new ArrayList<>(Arrays.asList(JamSave.BuildingType.values()));
-      builds.remove(JamSave.BuildingType.RadioTower);
-      builds.remove(JamSave.BuildingType.CommandTent);
-      builds.remove(JamSave.BuildingType.None);
+    ArrayList<JamSave.BuildingType> builds =
+        new ArrayList<>(Arrays.asList(JamSave.BuildingType.values()));
+    builds.remove(JamSave.BuildingType.RadioTower);
+    builds.remove(JamSave.BuildingType.CommandTent);
+    builds.remove(JamSave.BuildingType.None);
 
-      return builds;
+    return builds;
   }
 
   public ChooseBuildingUI(PlayerRef playerRef) {
@@ -72,15 +71,28 @@ public class ChooseBuildingUI
     System.out.println("You clicked on " + data.getBuildingName());
 
     var playerRefRef = this.playerRef.getReference();
-    Player player = playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
+    Player player =
+        playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
 
-    if(player == null) {
-        return;
+    if (player == null) {
+      return;
     }
 
     player.getPageManager().setPage(ref, store, Page.None);
 
-    //store.addComponent(ref, Plugin.getPlaceType(), new PlacePreviewComponent());
+    var res =
+        Arrays.stream(JamSave.BuildingType.values())
+            .filter(bt -> bt.name().equalsIgnoreCase(data.getBuildingName()))
+            .findFirst();
+    if (res.isEmpty()) return;
+
+    var world = store.getExternalData().getWorld();
+    world.execute(
+        () -> {
+          var preview = new PlacePreviewComponent();
+          preview.building = res.get();
+          store.addComponent(ref, Plugin.getPlaceType(), preview);
+        });
   }
 
   public static class ChooseBuildingUIData {
