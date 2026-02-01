@@ -81,6 +81,11 @@ public class JamSave implements Resource<ChunkStore> {
   public static final BuilderCodec<JamSave> CODEC =
       BuilderCodec.builder(JamSave.class, JamSave::new)
           .append(
+              new KeyedCodec<>("Day", Codec.INTEGER),
+              (self, value) -> self.day = value,
+              (self) -> self.day)
+          .add()
+          .append(
               new KeyedCodec<>("Colonists", Codec.INTEGER),
               (self, value) -> self.colonists = value,
               (self) -> self.colonists)
@@ -107,6 +112,7 @@ public class JamSave implements Resource<ChunkStore> {
           .add()
           .build();
 
+  public int day;
   public int colonists;
   public int food;
   public int water;
@@ -114,10 +120,12 @@ public class JamSave implements Resource<ChunkStore> {
   public List<Building> buildings;
 
   public JamSave() {
+    this.day = 1;
     this.buildings = new ArrayList<>();
   }
 
   public JamSave(JamSave other) {
+    this.day = other.day;
     this.colonists = other.colonists;
     this.food = other.food;
     this.water = other.water;
