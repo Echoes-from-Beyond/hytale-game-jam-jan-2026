@@ -9,15 +9,11 @@ import com.hypixel.hytale.protocol.MouseButtonType;
 import com.hypixel.hytale.server.core.asset.AssetModule;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.prefab.PrefabStore;
 import com.hypixel.hytale.server.core.prefab.selection.buffer.PrefabBufferUtil;
-import com.hypixel.hytale.server.core.prefab.selection.buffer.impl.IPrefabBuffer;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
 import org.jspecify.annotations.NullMarked;
-
-import java.nio.file.Path;
 
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
@@ -46,9 +42,17 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
 
           if (placement != null) {
             JamSave.BuildingType target = placement.building;
-            var prefabBuffer = PrefabBufferUtil.getCached(AssetModule.get().getAssetPack("org.echoesfrombeyond:Scrapvengers").getRoot().resolve("Server").resolve("Prefabs").resolve(target.getPrefabAsset()));
+            var prefabBuffer =
+                PrefabBufferUtil.getCached(
+                    AssetModule.get()
+                        .getAssetPack("org.echoesfrombeyond:Scrapvengers")
+                        .getRoot()
+                        .resolve("Server")
+                        .resolve("Prefabs")
+                        .resolve(target.getPrefabAsset()));
 
-            PrefabUtil.paste(prefabBuffer, world, event.pos, Rotation.None, true, new FastRandom(), buffer);
+            PrefabUtil.paste(
+                prefabBuffer, world, event.pos, Rotation.None, true, new FastRandom(), buffer);
             return;
           }
 
