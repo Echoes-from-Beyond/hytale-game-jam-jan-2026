@@ -100,8 +100,9 @@ public class Plugin extends JavaPlugin {
 
     getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
     getEntityStoreRegistry().registerSystem(new EnemyDamageTowerSystem());
-    getEntityStoreRegistry().registerSystem(new BattleSystem());
     getEntityStoreRegistry().registerSystem(new TurretFireSystem());
+    getEntityStoreRegistry().registerSystem(new BattleSystem());
+
     getEntityStoreRegistry().registerSystem(new MouseClickSystem());
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());

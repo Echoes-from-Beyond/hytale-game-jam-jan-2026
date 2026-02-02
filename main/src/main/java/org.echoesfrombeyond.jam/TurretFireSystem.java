@@ -90,7 +90,6 @@ public class TurretFireSystem extends EntityTickingSystem<EntityStore> {
   public Set<Dependency<EntityStore>> getDependencies() {
     return Set.of(
         new SystemDependency<>(Order.AFTER, EnemyDamageTowerSystem.class),
-        new SystemDependency<>(Order.AFTER, EnemyDeathSystem.class),
-        new SystemDependency<>(Order.AFTER, BattleSystem.class));
+        new SystemDependency<>(Order.AFTER, EnemyDeathSystem.class));
   }
 }

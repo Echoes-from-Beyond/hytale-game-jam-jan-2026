@@ -159,6 +159,8 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
   public Set<Dependency<EntityStore>> getDependencies() {
     return Set.of(
         new SystemDependency<>(Order.AFTER, EnemyDamageTowerSystem.class),
-        new SystemDependency<>(Order.AFTER, EnemyDeathSystem.class));
+        new SystemDependency<>(Order.AFTER, EnemyDeathSystem.class),
+        new SystemDependency<>(Order.AFTER, TurretFireSystem.class)
+    );
   }
 }
