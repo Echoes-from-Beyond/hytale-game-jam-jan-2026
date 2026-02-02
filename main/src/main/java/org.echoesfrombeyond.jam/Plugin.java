@@ -44,6 +44,7 @@ public class Plugin extends JavaPlugin {
 
   private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
   private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
+  private static @Nullable ComponentType<EntityStore, GameStageComponent> STAGE_TYPE;
   private static @Nullable AssetPack ASSET_PACK;
 
   public static ResourceType<ChunkStore, JamSave> getJamType() {
@@ -54,6 +55,11 @@ public class Plugin extends JavaPlugin {
   public static ComponentType<EntityStore, PlacePreviewComponent> getPlaceType() {
     assert PLACE_TYPE != null;
     return PLACE_TYPE;
+  }
+
+  public static ComponentType<EntityStore, GameStageComponent> getStageType() {
+    assert STAGE_TYPE != null;
+    return STAGE_TYPE;
   }
 
   public static AssetPack getAssetPack() {
@@ -74,11 +80,15 @@ public class Plugin extends JavaPlugin {
     PLACE_TYPE =
         getEntityStoreRegistry()
             .registerComponent(PlacePreviewComponent.class, PlacePreviewComponent::new);
+    STAGE_TYPE =
+        getEntityStoreRegistry()
+            .registerComponent(GameStageComponent.class, GameStageComponent::new);
 
     getEntityStoreRegistry().registerSystem(new MouseClickSystem());
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
     getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
+    getEntityStoreRegistry().registerSystem(new BattleSystem());
     getEntityStoreRegistry()
         .registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
     getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});
@@ -227,6 +237,18 @@ public class Plugin extends JavaPlugin {
       }
 
       ref.getStore().invoke(ref, new HudUpdateSystem.Event());
+
+      var gsc = new GameStageComponent();
+      gsc.day =
+          ref.getStore()
+              .getExternalData()
+              .getWorld()
+              .getChunkStore()
+              .getStore()
+              .getResource(getJamType())
+              .day;
+
+      ref.getStore().addComponent(ref, getStageType(), gsc);
     }
 
     ServerCameraSettings settings = new ServerCameraSettings();
