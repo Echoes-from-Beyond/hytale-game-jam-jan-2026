@@ -2,17 +2,17 @@ $C = "Common.ui";
 
 $C.@PageOverlay {}
 
+// cob made concrete poetry out of UI code and blamed it on intelliJ smh my head
 $C.@DecoratedContainer {
   Anchor: (Width: 740, Height: 480);
   Group #TestGroup {
+
     Label #TestTitle {
-            Anchor: (Full: 0);
-            Style: (
-                  ...$C.@TitleStyle,
-                  HorizontalAlignment: Center,
-                );
-                Padding: (Horizontal: 19);
-              }
+      Anchor: (Full: 0);
+      Style: (...$C.@TitleStyle, HorizontalAlignment: Center, VerticalAlignment: Start);
+      Padding: (Horizontal: 19, Vertical: 15);
+    }
+
     ItemSlotButton #Ignore {
             Anchor: (Width: 10, Height: 10);
                       LayoutMode: Full;

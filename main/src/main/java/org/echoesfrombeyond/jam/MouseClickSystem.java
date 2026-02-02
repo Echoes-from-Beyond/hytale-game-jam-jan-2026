@@ -36,6 +36,12 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
     var ref = chunk.getReferenceTo(i);
     var world = buffer.getExternalData().getWorld();
 
+    var player = chunk.getComponent(i, Player.getComponentType());
+    assert player != null;
+
+    // if the player has a UI open, don't handle block click events in-world
+    if (player.getPageManager().getCustomPage() != null) return;
+
     world.execute(
         () -> {
           if (!ref.isValid()) return;
@@ -185,7 +191,7 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
           }
 
           // TODO: interact with buildings otherwise
-          OpenBuildingInteractUI.openBuildingPage(buffer, ref);
+          OpenBuildingInteractUI.openBuildingPage(buffer, ref, clickedBuilding);
         });
   }
 

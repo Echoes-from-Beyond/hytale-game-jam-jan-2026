@@ -16,21 +16,25 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class JamSave implements Resource<ChunkStore> {
   public enum BuildingType {
-    None(""),
+    None("", false, "None"),
 
     // should use CamelCase not SHOUTY_SNAKE_CASE as per hytale convention
-    CommandTent("command_tent"),
-    Farm("farm"),
-    Housing("housing"),
-    RadioTower("radio_tower"),
-    ScavengerPort("scavenger_port"),
-    Turret("turret"),
-    Well("well");
+    CommandTent("command_tent", false, "Command Tent"),
+    Farm("farm", true, "Farm"),
+    Housing("housing", false, "Housing"),
+    RadioTower("radio_tower", false, "Radio Tower"),
+    ScavengerPort("scavenger_port", true, "Scavenger Port"),
+    Turret("turret", false, "Turret"),
+    Well("well", false, "Well");
 
     public final String prefabAsset;
+    public final boolean needsColonist;
+    public final String prettyName;
 
-    BuildingType(String prefabAsset) {
+    BuildingType(String prefabAsset, boolean needsColonist, String prettyName) {
       this.prefabAsset = prefabAsset;
+      this.needsColonist = needsColonist;
+      this.prettyName = prettyName;
     }
 
     public String getPrefabAsset() {

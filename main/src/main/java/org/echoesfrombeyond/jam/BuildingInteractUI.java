@@ -19,11 +19,15 @@ public class BuildingInteractUI
     extends InteractiveCustomUIPage<BuildingInteractUI.BuildingInteractUIData> {
   // I made this interactive in case we have time to do building upgrades
 
-  public BuildingInteractUI(PlayerRef playerRef) {
+  private final JamSave.Building building;
+
+  public BuildingInteractUI(PlayerRef playerRef, JamSave.Building building) {
     super(
         playerRef,
         CustomPageLifetime.CanDismissOrCloseThroughInteraction,
         BuildingInteractUIData.CODEC);
+
+    this.building = building;
   }
 
   @Override
@@ -34,12 +38,12 @@ public class BuildingInteractUI
       Store<EntityStore> store) {
     commandBuilder.append("Building_Interact.ui");
     String selector = "#TestGroup";
-    commandBuilder.set(selector + " #TestTitle.Text", "are we kweeback?");
+    commandBuilder.set(selector + " #TestTitle.Text", building.type.prettyName);
 
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
         selector + " #Ignore",
-        EventData.of(BuildingInteractUIData.BUILDING_NAME, "placeholder"),
+        EventData.of(BuildingInteractUIData.BUILDING_NAME, building.type.prettyName),
         false);
   }
 

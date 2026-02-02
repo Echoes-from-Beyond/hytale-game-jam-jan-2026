@@ -9,7 +9,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 public class OpenBuildingInteractUI {
   // this might be a stupid way of doing this
   // but we only want the interaction to succeed in specific circumstances...
-  public static void openBuildingPage(CommandBuffer<EntityStore> buffer, Ref<EntityStore> ref) {
+  public static void openBuildingPage(
+      CommandBuffer<EntityStore> buffer, Ref<EntityStore> ref, JamSave.Building building) {
     if (buffer == null) return;
 
     var player = buffer.getComponent(ref, Player.getComponentType());
@@ -19,6 +20,8 @@ public class OpenBuildingInteractUI {
         || playerRef == null
         || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
 
-    player.getPageManager().openCustomPage(ref, ref.getStore(), new BuildingInteractUI(playerRef));
+    player
+        .getPageManager()
+        .openCustomPage(ref, ref.getStore(), new BuildingInteractUI(playerRef, building));
   }
 }
