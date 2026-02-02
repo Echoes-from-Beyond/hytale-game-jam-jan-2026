@@ -1,5 +1,6 @@
 package org.echoesfrombeyond.jam;
 
+import com.hypixel.hytale.builtin.hytalegenerator.bounds.Bounds3i;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
@@ -69,10 +70,16 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             boolean conflict = false;
 
             for (JamSave.Building build : save.buildings) {
-              if (build.min.x >= minBound.x
-                  || build.min.z >= minBound.z
-                  || build.max.x <= maxBound.x
-                  || build.max.z <= maxBound.z) {
+              var building = new Bounds3i(build.min.clone(), build.max.clone());
+              var candidate = new Bounds3i(minBound.clone(), maxBound.clone());
+
+              building.min.setY(0);
+              building.max.setY(1);
+
+              candidate.min.setY(0);
+              candidate.max.setY(1);
+
+              if (building.intersects(candidate)) {
                 conflict = true;
                 break;
               }
