@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.math.util.FastRandom;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.MouseButtonType;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.AssetModule;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -19,6 +20,7 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
+  public static int BUILDING_PLACE_GAP = 3;
 
   public MouseClickSystem() {
     super(MouseClickEvent.class);
@@ -31,20 +33,25 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
       Store<EntityStore> store,
       CommandBuffer<EntityStore> buffer,
       MouseClickEvent event) {
-
+    var ref = chunk.getReferenceTo(i);
     var world = buffer.getExternalData().getWorld();
+
     world.execute(
         () -> {
+          if (!ref.isValid()) return;
+
           if (event.type == MouseButtonType.Right) {
             // dismiss the current selection with rclick
-            buffer.tryRemoveComponent(chunk.getReferenceTo(i), Plugin.getPlaceType());
+            buffer.tryRemoveComponent(ref, Plugin.getPlaceType());
             return;
           }
 
-          var placement = chunk.getComponent(i, Plugin.getPlaceType());
+          var entityStore = world.getEntityStore().getStore();
+          var placement = entityStore.getComponent(ref, Plugin.getPlaceType());
+          var playerRef = entityStore.getComponent(ref, PlayerRef.getComponentType());
+
           JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
           Vector3i clickLocation = event.pos;
-          var ref = chunk.getReferenceTo(i);
 
           if (placement != null) {
             JamSave.BuildingType target = placement.building;
@@ -71,7 +78,16 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             boolean conflict = false;
 
             for (JamSave.Building build : save.buildings) {
-              var building = new Bounds3i(build.min.clone(), build.max.clone());
+              var building =
+                  new Bounds3i(
+                      build
+                          .min
+                          .clone()
+                          .subtract(BUILDING_PLACE_GAP, BUILDING_PLACE_GAP, BUILDING_PLACE_GAP),
+                      build
+                          .max
+                          .clone()
+                          .add(BUILDING_PLACE_GAP, BUILDING_PLACE_GAP, BUILDING_PLACE_GAP));
               var candidate = new Bounds3i(minBound.clone(), maxBound.clone());
 
               building.min.setY(0);
@@ -87,8 +103,8 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             }
 
             if (conflict) {
-              // TODO: warn the player about conflict
-              System.out.println("Conflict with building placement");
+              if (playerRef != null)
+                playerRef.sendMessage(Message.raw("Too close to another building!"));
               return;
             }
 
@@ -104,6 +120,7 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
               switch (splitTypes[j]) {
                 case "scrap":
                   if (save.scrap < value) {
+                    if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough scrap!"));
                     return;
                   }
 
@@ -111,6 +128,7 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                   break;
                 case "food":
                   if (save.food < value) {
+                    if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough food!"));
                     return;
                   }
 
@@ -118,6 +136,7 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                   break;
                 case "water":
                   if (save.water < value) {
+                    if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough water!"));
                     return;
                   }
 
@@ -145,10 +164,8 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
 
             save.buildings.add(building);
 
-            store.removeComponent(ref, Plugin.getPlaceType());
-
-            // TODO: fix threading here @vegetal
-            store.invoke(new HudUpdateSystem.Event());
+            entityStore.removeComponent(ref, Plugin.getPlaceType());
+            entityStore.invoke(ref, new HudUpdateSystem.Event());
             return;
           }
 
@@ -168,7 +185,6 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
           }
 
           // TODO: interact with buildings otherwise
-          System.out.println("I clicked on a building!");
           OpenBuildingInteractUI.openBuildingPage(buffer, ref);
         });
   }
