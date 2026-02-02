@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.modules.entity.component.TransformComponen
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
+import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +37,7 @@ public class TurretFireSystem extends EntityTickingSystem<EntityStore> {
     if (!stage.isBattle) return;
 
     var world = store.getExternalData().getWorld();
-    var query = Query.and(Plugin.getEnemyType(), TransformComponent.getComponentType());
+    var query = Query.and(Plugin.getEnemyType(), TransformComponent.getComponentType(), Query.not(DeathComponent.getComponentType()));
 
     world.execute(
         () -> {
