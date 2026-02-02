@@ -85,9 +85,9 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             return;
           stage.battleTime = 0;
 
+          spawnEnemy(archetypeChunk.getReferenceTo(i), store);
           if (++stage.spawned < currentDayData.spawns) {
             System.out.println("Spawned enemy");
-            spawnEnemy(archetypeChunk.getReferenceTo(i), store);
           } else {
             System.out.println("All enemies spawned");
           }

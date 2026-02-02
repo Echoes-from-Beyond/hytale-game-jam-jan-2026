@@ -96,13 +96,15 @@ public class Plugin extends JavaPlugin {
     ENEMY_TYPE =
         getEntityStoreRegistry().registerComponent(EnemyComponent.class, EnemyComponent::new);
 
+    getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
+    getEntityStoreRegistry().registerSystem(new EnemyDamageTowerSystem());
+    getEntityStoreRegistry().registerSystem(new BattleSystem());
+    getEntityStoreRegistry().registerSystem(new TurretFireSystem());
     getEntityStoreRegistry().registerSystem(new MouseClickSystem());
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
     getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
-    getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
-    getEntityStoreRegistry().registerSystem(new EnemyDamageTowerSystem());
-    getEntityStoreRegistry().registerSystem(new BattleSystem());
+
     getEntityStoreRegistry()
         .registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
     getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});

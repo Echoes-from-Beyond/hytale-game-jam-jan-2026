@@ -9,6 +9,7 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.jspecify.annotations.NullMarked;
 
 /** Data that should be persistent across restarts */
@@ -41,16 +42,22 @@ public class JamSave implements Resource<ChunkStore> {
     public Vector3i min;
     public Vector3i max;
 
+    // for turrets
+    public float fireDelay;
+
     public Building() {
       this.type = BuildingType.Farm;
       this.min = new Vector3i(0, 0, 0);
       this.max = new Vector3i(0, 0, 0);
+
+      this.fireDelay = TurretFireSystem.TURRET_FIRE_RATE;
     }
 
     public Building(Building other) {
       this.type = other.type;
       this.min = other.min.clone();
       this.max = other.max.clone();
+      this.fireDelay = other.fireDelay;
     }
   }
 
@@ -74,10 +81,15 @@ public class JamSave implements Resource<ChunkStore> {
               (self, value) -> self.max = value,
               (self) -> self.max)
           .add()
+          .append(
+              new KeyedCodec<>("FireDelay", Codec.FLOAT),
+              (self, value) -> self.fireDelay = value,
+              (self) -> self.fireDelay)
+          .add()
           .build();
 
   public static final Codec<List<Building>> BUILDING_LIST_CODEC =
-      new ListCodec<>(BUILDING_CODEC, ArrayList::new, false);
+      new ListCodec<>(BUILDING_CODEC, CopyOnWriteArrayList::new, false);
 
   public static final BuilderCodec<JamSave> CODEC =
       BuilderCodec.builder(JamSave.class, JamSave::new)
@@ -124,7 +136,7 @@ public class JamSave implements Resource<ChunkStore> {
   public JamSave() {
     this.day = 1;
     this.towerHealth = 10;
-    this.buildings = new ArrayList<>();
+    this.buildings = new CopyOnWriteArrayList<>();
   }
 
   public JamSave(JamSave other) {
