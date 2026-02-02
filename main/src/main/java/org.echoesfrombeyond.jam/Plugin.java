@@ -42,6 +42,8 @@ import org.jspecify.annotations.Nullable;
 public class Plugin extends JavaPlugin {
   public static final Vector3d VEC = new Vector3d(1127, 143, -2685);
 
+  public static final Vector3d RADIO_TOWER_LOC = new Vector3d(1127, 143, -2685);
+
   private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
   private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
   private static @Nullable ComponentType<EntityStore, GameStageComponent> STAGE_TYPE;
