@@ -137,6 +137,10 @@ public class JamSave implements Resource<ChunkStore> {
   public JamSave() {
     this.day = 1;
     this.towerHealth = 10;
+    this.food = 20;
+    this.scrap = 10;
+    this.water = 10;
+    this.colonists = 0;
     this.buildings = new CopyOnWriteArrayList<>();
   }
 
