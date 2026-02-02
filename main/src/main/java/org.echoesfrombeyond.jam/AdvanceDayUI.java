@@ -14,7 +14,10 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.ArrayList;
 
 @NullMarked
 public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDayData> {
@@ -61,8 +64,33 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
     var world = store.getExternalData().getWorld();
     world.execute(
         () -> {
+          JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
           var gs = store.getComponent(ref, Plugin.getStageType());
           if (gs != null) gs.isBattle = true;
+
+          ArrayList<DataContainer> placeables = DataContainer.placeableBuildings();
+          outerLoop:
+          for(JamSave.Building b : save.buildings) {
+            for(DataContainer p : placeables) {
+              if(p.buildingType != b.type) {
+                continue ;
+              }
+
+              switch(p.resourceGenerated) {
+                case("scrap"):
+                  save.scrap += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  break;
+                case("water"):
+                  save.water += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  break;
+                case("food"):
+                  save.food += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  break;
+                default:
+                  continue outerLoop;
+              }
+            }
+          }
         });
   }
 

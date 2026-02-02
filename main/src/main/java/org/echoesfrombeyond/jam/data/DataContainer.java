@@ -1,5 +1,6 @@
 package org.echoesfrombeyond.jam.data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.echoesfrombeyond.jam.JamSave;
@@ -113,4 +114,16 @@ public class DataContainer {
                 0)),
         UpgradeRequirement.resourceTypes[0])
   };
+
+  public static ArrayList<DataContainer> placeableBuildings() {
+    ArrayList<DataContainer> builds = new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
+
+    builds.removeIf(
+            b ->
+                    b.buildingType == JamSave.BuildingType.RadioTower
+                            || b.buildingType == JamSave.BuildingType.CommandTent
+                            || b.buildingType == JamSave.BuildingType.None);
+
+    return builds;
+  }
 }

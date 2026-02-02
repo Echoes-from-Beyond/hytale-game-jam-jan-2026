@@ -22,19 +22,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class ChooseBuildingUI
     extends InteractiveCustomUIPage<ChooseBuildingUI.ChooseBuildingUIData> {
-  private final ArrayList<DataContainer> BUILDINGS = addPermittedBuildings();
-
-  private ArrayList<DataContainer> addPermittedBuildings() {
-    ArrayList<DataContainer> builds = new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
-
-    builds.removeIf(
-        b ->
-            b.buildingType == JamSave.BuildingType.RadioTower
-                || b.buildingType == JamSave.BuildingType.CommandTent
-                || b.buildingType == JamSave.BuildingType.None);
-
-    return builds;
-  }
+  private final ArrayList<DataContainer> BUILDINGS = DataContainer.placeableBuildings();
 
   public ChooseBuildingUI(PlayerRef playerRef) {
     super(
