@@ -57,6 +57,14 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
     }
 
     player.getPageManager().setPage(ref, store, Page.None);
+
+    var world = store.getExternalData().getWorld();
+    world.execute(
+            () -> {
+              GameStageComponent gs = new GameStageComponent();
+              gs.isBattle = true;
+              store.addComponent(ref, Plugin.getStageType(), gs);
+            });
   }
 
   public static class AdvanceDayData {
