@@ -8,10 +8,13 @@ import org.echoesfrombeyond.jam.JamSave;
 public class DataContainer {
   public JamSave.BuildingType buildingType;
   public List<Upgrade> upgrades;
+  public String resourceGenerated;
 
-  public DataContainer(JamSave.BuildingType buildingType, List<Upgrade> upgrades) {
+  public DataContainer(
+      JamSave.BuildingType buildingType, List<Upgrade> upgrades, String resourceGenerated) {
     this.buildingType = buildingType;
     this.upgrades = upgrades;
+    this.resourceGenerated = resourceGenerated;
   }
 
   // look, this is quite possibly the worst thing I've ever made
@@ -25,60 +28,89 @@ public class DataContainer {
     new DataContainer(
         JamSave.BuildingType.RadioTower,
         Arrays.asList(
-            new Upgrade(
-                1,
-                Arrays.asList(
-                    // level 1 is never encountered (radio tower is not in shop) but just in case
-                    new UpgradeRequirement())),
+            // radio can't be bought, but have a default lvl 1 just in case
+            new Upgrade(),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 100))))),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 100)),
+                0,
+                0)),
+        UpgradeRequirement.resourceTypes[0]),
     new DataContainer(
         JamSave.BuildingType.CommandTent,
         Arrays.asList(
-            new Upgrade(
-                1,
-                Arrays.asList(
-                    // tents are neither bought nor upgraded but just in case
-                    new UpgradeRequirement())))),
+            // tents are neither bought nor upgraded but just in case
+            new Upgrade()),
+        UpgradeRequirement.resourceTypes[0]),
     new DataContainer(
         JamSave.BuildingType.Farm,
         Arrays.asList(
             new Upgrade(
-                1, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3))),
+                1,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3)),
+                1,
+                0),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10))))),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
+                2,
+                2)),
+        UpgradeRequirement.resourceTypes[2]),
     new DataContainer(
         JamSave.BuildingType.Well,
         Arrays.asList(
             new Upgrade(
-                1, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6))),
+                1,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6)),
+                2,
+                1),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 12))))),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 12)),
+                2,
+                4)),
+        UpgradeRequirement.resourceTypes[1]),
     new DataContainer(
         JamSave.BuildingType.ScavengerPort,
         Arrays.asList(
             new Upgrade(
-                1, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5))),
+                1,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5)),
+                3,
+                1),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13))))),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13)),
+                2,
+                3)),
+        UpgradeRequirement.resourceTypes[0]),
     new DataContainer(
         JamSave.BuildingType.Turret,
         Arrays.asList(
             new Upgrade(
-                1, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 7))),
+                1,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 7)),
+                0,
+                0),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 13))))),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 13)),
+                0,
+                0)),
+        UpgradeRequirement.resourceTypes[0]),
     new DataContainer(
         JamSave.BuildingType.Housing,
         Arrays.asList(
             new Upgrade(
-                1, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10))),
+                1,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
+                0,
+                0),
             new Upgrade(
-                2, Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10)))))
+                2,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10)),
+                0,
+                0)),
+        UpgradeRequirement.resourceTypes[0])
   };
 }
