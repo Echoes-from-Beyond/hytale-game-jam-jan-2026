@@ -21,6 +21,7 @@ public class JamSave implements Resource<ChunkStore> {
     // should use CamelCase not SHOUTY_SNAKE_CASE as per hytale convention
     CommandTent("command_tent"),
     Farm("farm"),
+    Housing("housing"),
     RadioTower("radio_tower"),
     ScavengerPort("scavenger_port"),
     Turret("turret"),

@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
 import java.util.Arrays;
+import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -122,6 +123,9 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             }
           }
 
+          DataContainer[] trash = DataContainer.allUpgrades;
+
+          System.out.println(trash[0].upgrades.getFirst().requirements.getFirst().resourceType);
           if (clickedBuilding == null) {
             return;
           }
