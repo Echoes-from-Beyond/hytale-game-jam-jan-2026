@@ -18,6 +18,10 @@ public class DataContainer {
   // I guess we're not that kweeback after all :pensive:
   // TODO: balancing
   public static DataContainer[] allUpgrades = {
+    // btw the event API for interactions is so bad that we can only have one resource requirement
+    // there doesn't look to be a way to request an array of data from the player in a button
+    // there IS potentially an ugly workaround for this (field_N where N is up to a fixed maximum of requirements) but
+    // idk if we should bother
     new DataContainer(
         JamSave.BuildingType.RadioTower,
         Arrays.asList(
@@ -43,12 +47,10 @@ public class DataContainer {
             new Upgrade(
                 1,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 3))),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3))),
             new Upgrade(
                 2,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 6),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10))))),
     new DataContainer(
         JamSave.BuildingType.Well,
@@ -64,13 +66,11 @@ public class DataContainer {
             new Upgrade(
                 1,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6))),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5))),
             new Upgrade(
                 2,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 14))))),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13))))),
     new DataContainer(
         JamSave.BuildingType.Turret,
         Arrays.asList(
@@ -85,12 +85,10 @@ public class DataContainer {
             new Upgrade(
                 1,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10))),
             new Upgrade(
                 2,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 4)))))
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10)))))
   };
 }

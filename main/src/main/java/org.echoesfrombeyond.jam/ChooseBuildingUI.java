@@ -16,19 +16,24 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
+
+import javax.xml.crypto.Data;
 
 @NullMarked
 public class ChooseBuildingUI
     extends InteractiveCustomUIPage<ChooseBuildingUI.ChooseBuildingUIData> {
-  private final ArrayList<JamSave.BuildingType> BUILDINGS = addPermittedBuildings();
+  private final ArrayList<DataContainer> BUILDINGS = addPermittedBuildings();
 
-  private ArrayList<JamSave.BuildingType> addPermittedBuildings() {
-    ArrayList<JamSave.BuildingType> builds =
-        new ArrayList<>(Arrays.asList(JamSave.BuildingType.values()));
-    builds.remove(JamSave.BuildingType.RadioTower);
-    builds.remove(JamSave.BuildingType.CommandTent);
-    builds.remove(JamSave.BuildingType.None);
+  private ArrayList<DataContainer> addPermittedBuildings() {
+    ArrayList<DataContainer> builds =
+        new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
+
+    builds.removeIf(b -> b.buildingType == JamSave.BuildingType.RadioTower
+            || b.buildingType == JamSave.BuildingType.CommandTent
+            || b.buildingType == JamSave.BuildingType.None);
 
     return builds;
   }
@@ -51,7 +56,8 @@ public class ChooseBuildingUI
     for (int i = 0; i < BUILDINGS.size(); i++) {
       // why are string templates not released yet smh oracle
       String select = "#BuildingGroup[" + i + "]";
-      JamSave.BuildingType build = BUILDINGS.get(i);
+      DataContainer targetBuild = BUILDINGS.get(i);
+      JamSave.BuildingType build = targetBuild.buildingType;
 
       // why can't you generate a list in a single UI file lmao
       commandBuilder.append("#BuildingGroup", "Choose_Building_Fragment.ui");
@@ -60,7 +66,10 @@ public class ChooseBuildingUI
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           select + " #BuildingSelector",
-          EventData.of(ChooseBuildingUIData.BUILDING_NAME, build.name()),
+          EventData.of(ChooseBuildingUIData.BUILDING_NAME, build.name())
+                  // ONLY the first level can be found in the shop
+                  .append(ChooseBuildingUIData.RESOURCE_TYPE, targetBuild.upgrades.getFirst().requirements.getFirst().resourceType)
+              .append(ChooseBuildingUIData.RESOURCE_AMOUNT, String.valueOf(targetBuild.upgrades.getFirst().requirements.getFirst().amount)),
           false);
     }
   }
@@ -68,8 +77,6 @@ public class ChooseBuildingUI
   @Override
   public void handleDataEvent(
       Ref<EntityStore> ref, Store<EntityStore> store, ChooseBuildingUI.ChooseBuildingUIData data) {
-    System.out.println("You clicked on " + data.getBuildingName());
-
     var playerRefRef = this.playerRef.getReference();
     Player player =
         playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
@@ -100,6 +107,8 @@ public class ChooseBuildingUI
     // limitation with the client
     // doesn't this use JSONs? those support numbers lol
     static final String BUILDING_NAME = "BuildingName";
+    static final String RESOURCE_TYPE = "ResourceType";
+    static final String RESOURCE_AMOUNT = "ResourceAmount";
 
     public static final BuilderCodec<ChooseBuildingUIData> CODEC =
         BuilderCodec.builder(ChooseBuildingUIData.class, ChooseBuildingUIData::new)
@@ -108,12 +117,31 @@ public class ChooseBuildingUI
                 (data, s) -> data.buildingName = s,
                 (data) -> data.buildingName)
             .add()
+                .append(
+                        new KeyedCodec<>(RESOURCE_TYPE, BuilderCodec.STRING),
+                        (data, s) -> data.resourceType = s,
+                        (data) -> data.resourceType)
+                .add()
+                .append(new KeyedCodec<>(RESOURCE_AMOUNT, BuilderCodec.STRING),
+                        (data, s) -> data.resourceAmount = Integer.parseInt(s),
+                        (data) -> String.valueOf(data.resourceAmount))
+                .add()
             .build();
 
     private String buildingName = "";
+    private String resourceType = "";
+    private int resourceAmount;
 
     public String getBuildingName() {
       return buildingName;
+    }
+
+    public String getResourceType() {
+      return resourceType;
+    }
+
+    public int getResourceAmount() {
+      return resourceAmount;
     }
   }
 }
