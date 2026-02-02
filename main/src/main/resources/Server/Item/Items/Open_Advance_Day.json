@@ -1,0 +1,23 @@
+{
+  "TranslationProperties": {
+    "Name": "items.Open_Advance_Day.name",
+    "Description": "items.Open_Advance_Day.description"
+  },
+  "Id": "Open_Advance_Day",
+  "Icon": "Icons/ItemsGenerated/Open_Advance_Day.png",
+  "Model": "Items/Tools/Brush/Brush.blockymodel",
+  "Texture": "Items/Tools/Brush/Brush_Texture.png",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Example"
+  ],
+  "Interactions": {
+    "Secondary": {
+      "Interactions": [
+        {
+          "Type": "Open_Advance_Day"
+        }
+      ]
+    }
+  }
+}

@@ -1,2 +1,5 @@
 Open_Select_Building.name = Select Building
 Open_Select_Building.description = Right-click to open the building menu.
+
+Open_Advance_Day.name = Advance Day
+Open_Advance_Day.description = Right-click to open the day menu.

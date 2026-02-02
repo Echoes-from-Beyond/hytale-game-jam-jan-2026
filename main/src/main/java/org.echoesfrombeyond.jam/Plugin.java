@@ -94,6 +94,8 @@ public class Plugin extends JavaPlugin {
     getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});
     getCodecRegistry(Interaction.CODEC)
         .register("Open_Select_Building", OpenSelectBuildingUI.class, OpenSelectBuildingUI.CODEC);
+    getCodecRegistry(Interaction.CODEC)
+            .register("Open_Advance_Day", OpenAdvanceDayUI.class, OpenAdvanceDayUI.CODEC);
 
     PacketAdapters.registerInbound(
         (PlayerPacketWatcher)
@@ -233,6 +235,7 @@ public class Plugin extends JavaPlugin {
       if (player != null) {
         var inventory = player.getInventory();
         inventory.getHotbar().setItemStackForSlot((short) 0, new ItemStack("Open_Select_Building"));
+        inventory.getHotbar().setItemStackForSlot((short) 1, new ItemStack("Open_Advance_Day"));
         player.getHudManager().setCustomHud(playerRef, new SimHud(playerRef));
       }
 
