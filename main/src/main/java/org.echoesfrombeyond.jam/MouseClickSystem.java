@@ -14,11 +14,7 @@ import com.hypixel.hytale.server.core.prefab.selection.buffer.PrefabBufferUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -97,23 +93,23 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             }
 
             // TODO: feedback to player
-            switch(placement.resourceType) {
+            switch (placement.resourceType) {
               case "scrap":
-                if(save.scrap < placement.amountSpent) {
+                if (save.scrap < placement.amountSpent) {
                   return;
                 }
 
                 save.scrap -= placement.amountSpent;
                 break;
               case "food":
-                if(save.food < placement.amountSpent) {
+                if (save.food < placement.amountSpent) {
                   return;
                 }
 
                 save.food -= placement.amountSpent;
                 break;
               case "water":
-                if(save.water < placement.amountSpent) {
+                if (save.water < placement.amountSpent) {
                   return;
                 }
 

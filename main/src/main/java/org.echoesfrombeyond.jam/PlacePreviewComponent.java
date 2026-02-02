@@ -3,8 +3,6 @@ package org.echoesfrombeyond.jam;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import org.echoesfrombeyond.jam.data.Upgrade;
-import org.echoesfrombeyond.jam.data.UpgradeRequirement;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
