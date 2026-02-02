@@ -65,7 +65,10 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             return;
           }
 
-          if (stage.killed >= stage.spawned) {
+          if (!DAYS.containsKey(jam.day)) return;
+          var currentDayData = DAYS.get(jam.day);
+
+          if (stage.killed >= currentDayData.spawns) {
             if (++jam.day > FINAL_DAY) {
               System.out.println("YOU WIN");
             } else {
@@ -78,13 +81,10 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             return;
           }
 
-          if (!DAYS.containsKey(jam.day)) return;
-          var dayData = DAYS.get(jam.day);
-
-          if (battleTime < dayData.spawnInterval || stage.spawned >= dayData.spawns) return;
+          if (battleTime < currentDayData.spawnInterval || stage.spawned >= currentDayData.spawns) return;
           stage.battleTime = 0;
 
-          if (++stage.spawned < dayData.spawns) {
+          if (++stage.spawned < currentDayData.spawns) {
             System.out.println("Spawned enemy");
             spawnEnemy(archetypeChunk.getReferenceTo(i), store);
           } else {
