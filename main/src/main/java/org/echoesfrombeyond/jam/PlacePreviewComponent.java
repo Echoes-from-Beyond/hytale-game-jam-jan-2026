@@ -35,8 +35,8 @@ public class PlacePreviewComponent implements Component<EntityStore> {
   public PlacePreviewComponent(PlacePreviewComponent other) {
     this.dirty = other.dirty;
     this.building = other.building;
-    this.resourceType = other.resourceType;
-    this.amountSpent = other.amountSpent;
+    this.resourceTypes = other.resourceTypes;
+    this.amountsSpent = other.amountsSpent;
     this.oldMin = other.oldMin == null ? null : other.oldMin.clone();
     this.oldMax = other.oldMax == null ? null : other.oldMax.clone();
     this.cursorHoverPos = other.cursorHoverPos.clone();
