@@ -16,6 +16,9 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class EnemyDamageTowerSystem extends EntityTickingSystem<EntityStore> {
+  // in case of stuck entities
+  public static final float MAX_LIFETIME = 60;
+
   @Override
   public void tick(
       float v,
@@ -63,7 +66,7 @@ public class EnemyDamageTowerSystem extends EntityTickingSystem<EntityStore> {
           }
         });
 
-    if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < 16 || enemy.timeSpentAlive > 60) {
+    if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < 16 || enemy.timeSpentAlive > MAX_LIFETIME) {
       DamageSystems.executeDamage(
           i,
           archetypeChunk,
