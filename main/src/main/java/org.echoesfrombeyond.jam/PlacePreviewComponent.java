@@ -3,6 +3,8 @@ package org.echoesfrombeyond.jam;
 import com.hypixel.hytale.component.Component;
 import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.echoesfrombeyond.jam.data.Upgrade;
+import org.echoesfrombeyond.jam.data.UpgradeRequirement;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -12,6 +14,12 @@ public class PlacePreviewComponent implements Component<EntityStore> {
 
   /** The building that will be placed. */
   public JamSave.BuildingType building;
+
+  /** Resource used in purchase */
+  public String resourceType = "";
+
+  /** Resource cost */
+  public int amountSpent;
 
   /** Ignore these, they're only used by the preview system. */
   public @Nullable Vector3i oldMin;
@@ -29,6 +37,8 @@ public class PlacePreviewComponent implements Component<EntityStore> {
   public PlacePreviewComponent(PlacePreviewComponent other) {
     this.dirty = other.dirty;
     this.building = other.building;
+    this.resourceType = other.resourceType;
+    this.amountSpent = other.amountSpent;
     this.oldMin = other.oldMin == null ? null : other.oldMin.clone();
     this.oldMax = other.oldMax == null ? null : other.oldMax.clone();
     this.cursorHoverPos = other.cursorHoverPos.clone();

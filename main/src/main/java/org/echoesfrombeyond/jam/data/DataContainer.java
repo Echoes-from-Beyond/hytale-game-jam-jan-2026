@@ -21,8 +21,7 @@ public class DataContainer {
     // btw the event API for interactions is so bad that we can only have one resource requirement
     // there doesn't look to be a way to request an array of data from the player in a button
     // there IS potentially an ugly workaround for this (field_N where N is up to a fixed maximum of
-    // requirements) but
-    // idk if we should bother
+    // requirements) but idk if we should bother
     new DataContainer(
         JamSave.BuildingType.RadioTower,
         Arrays.asList(

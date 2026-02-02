@@ -14,11 +14,16 @@ import com.hypixel.hytale.server.core.prefab.selection.buffer.PrefabBufferUtil;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
+
   public MouseClickSystem() {
     super(MouseClickEvent.class);
   }
@@ -91,6 +96,34 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
               return;
             }
 
+            // TODO: feedback to player
+            switch(placement.resourceType) {
+              case "scrap":
+                if(save.scrap < placement.amountSpent) {
+                  return;
+                }
+
+                save.scrap -= placement.amountSpent;
+                break;
+              case "food":
+                if(save.food < placement.amountSpent) {
+                  return;
+                }
+
+                save.food -= placement.amountSpent;
+                break;
+              case "water":
+                if(save.water < placement.amountSpent) {
+                  return;
+                }
+
+                save.water -= placement.amountSpent;
+                break;
+              default:
+                // just do nothing for badly configured previews
+                return;
+            }
+
             PrefabUtil.paste(
                 prefabBuffer, world, clickLocation, Rotation.None, true, new FastRandom(), buffer);
 
@@ -108,6 +141,9 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             save.buildings.add(building);
 
             store.removeComponent(ref, Plugin.getPlaceType());
+
+            // TODO: fix threading here @vegetal
+            store.invoke(new HudUpdateSystem.Event());
             return;
           }
 

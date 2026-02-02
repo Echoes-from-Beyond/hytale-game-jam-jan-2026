@@ -100,6 +100,8 @@ public class ChooseBuildingUI
         () -> {
           var preview = new PlacePreviewComponent();
           preview.building = res.get();
+          preview.resourceType = data.getResourceType();
+          preview.amountSpent = data.getResourceAmount();
           store.addComponent(ref, Plugin.getPlaceType(), preview);
         });
   }
