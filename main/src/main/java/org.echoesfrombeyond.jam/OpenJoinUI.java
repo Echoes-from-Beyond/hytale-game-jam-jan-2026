@@ -14,8 +14,8 @@ public class OpenJoinUI {
     var playerRef = buffer.getComponent(ref, PlayerRef.getComponentType());
 
     if (player == null
-            || playerRef == null
-            || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
+        || playerRef == null
+        || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
 
     player.getPageManager().openCustomPage(ref, ref.getStore(), new JoinUI(playerRef));
   }

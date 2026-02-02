@@ -14,10 +14,9 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import java.util.ArrayList;
 import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
-
-import java.util.ArrayList;
 
 @NullMarked
 public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDayData> {
@@ -70,20 +69,20 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
 
           ArrayList<DataContainer> placeables = DataContainer.placeableBuildings();
           outerLoop:
-          for(JamSave.Building b : save.buildings) {
-            for(DataContainer p : placeables) {
-              if(p.buildingType != b.type) {
-                continue ;
+          for (JamSave.Building b : save.buildings) {
+            for (DataContainer p : placeables) {
+              if (p.buildingType != b.type) {
+                continue;
               }
 
-              switch(p.resourceGenerated) {
-                case("scrap"):
+              switch (p.resourceGenerated) {
+                case ("scrap"):
                   save.scrap += p.upgrades.getFirst().resourcesGeneratedPerColonist;
                   break;
-                case("water"):
+                case ("water"):
                   save.water += p.upgrades.getFirst().resourcesGeneratedPerColonist;
                   break;
-                case("food"):
+                case ("food"):
                   save.food += p.upgrades.getFirst().resourcesGeneratedPerColonist;
                   break;
                 default:

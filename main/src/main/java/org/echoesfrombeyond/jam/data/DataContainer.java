@@ -119,10 +119,10 @@ public class DataContainer {
     ArrayList<DataContainer> builds = new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
 
     builds.removeIf(
-            b ->
-                    b.buildingType == JamSave.BuildingType.RadioTower
-                            || b.buildingType == JamSave.BuildingType.CommandTent
-                            || b.buildingType == JamSave.BuildingType.None);
+        b ->
+            b.buildingType == JamSave.BuildingType.RadioTower
+                || b.buildingType == JamSave.BuildingType.CommandTent
+                || b.buildingType == JamSave.BuildingType.None);
 
     return builds;
   }

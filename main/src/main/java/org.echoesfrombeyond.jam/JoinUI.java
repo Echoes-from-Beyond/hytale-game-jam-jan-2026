@@ -17,10 +17,10 @@ public class JoinUI extends CustomUIPage {
 
   @Override
   public void build(
-          @NotNull Ref<EntityStore> ref,
-          @NotNull UICommandBuilder commandBuilder,
-          @NotNull UIEventBuilder eventBuilder,
-          @NotNull Store<EntityStore> store) {
+      @NotNull Ref<EntityStore> ref,
+      @NotNull UICommandBuilder commandBuilder,
+      @NotNull UIEventBuilder eventBuilder,
+      @NotNull Store<EntityStore> store) {
     commandBuilder.append("Join_Popup.ui");
   }
 }
