@@ -104,7 +104,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
     assert model.getBoundingBox() != null;
 
     var transform = new TransformComponent();
-    transform.getPosition().assign(1145, 150, -2687);
+    transform.getPosition().assign(Plugin.ENEMY_SPAWN_LOC.toVector3d());
 
     holder.addComponent(TransformComponent.getComponentType(), transform);
     holder.addComponent(HeadRotation.getComponentType(), new HeadRotation());
