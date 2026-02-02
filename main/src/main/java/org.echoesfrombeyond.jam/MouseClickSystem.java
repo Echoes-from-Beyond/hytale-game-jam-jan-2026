@@ -121,8 +121,14 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
               break;
             }
           }
+
+          if (clickedBuilding == null) {
+            return;
+          }
+
           // TODO: interact with buildings otherwise
           System.out.println("I clicked on a building!");
+          OpenBuildingInteractUI.openBuildingPage(buffer, ref);
         });
   }
 

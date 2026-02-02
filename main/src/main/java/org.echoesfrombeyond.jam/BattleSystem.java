@@ -81,7 +81,8 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             return;
           }
 
-          if (battleTime < currentDayData.spawnInterval || stage.spawned >= currentDayData.spawns) return;
+          if (battleTime < currentDayData.spawnInterval || stage.spawned >= currentDayData.spawns)
+            return;
           stage.battleTime = 0;
 
           if (++stage.spawned < currentDayData.spawns) {
