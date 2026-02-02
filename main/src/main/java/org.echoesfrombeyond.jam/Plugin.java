@@ -240,18 +240,7 @@ public class Plugin extends JavaPlugin {
       }
 
       ref.getStore().invoke(ref, new HudUpdateSystem.Event());
-
-      var gsc = new GameStageComponent();
-      gsc.day =
-          ref.getStore()
-              .getExternalData()
-              .getWorld()
-              .getChunkStore()
-              .getStore()
-              .getResource(getJamType())
-              .day;
-
-      ref.getStore().addComponent(ref, getStageType(), gsc);
+      ref.getStore().addComponent(ref, getStageType(), new GameStageComponent());
     }
 
     ServerCameraSettings settings = new ServerCameraSettings();
