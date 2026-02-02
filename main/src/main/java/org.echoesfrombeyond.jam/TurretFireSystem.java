@@ -37,7 +37,11 @@ public class TurretFireSystem extends EntityTickingSystem<EntityStore> {
     if (!stage.isBattle) return;
 
     var world = store.getExternalData().getWorld();
-    var query = Query.and(Plugin.getEnemyType(), TransformComponent.getComponentType(), Query.not(DeathComponent.getComponentType()));
+    var query =
+        Query.and(
+            Plugin.getEnemyType(),
+            TransformComponent.getComponentType(),
+            Query.not(DeathComponent.getComponentType()));
 
     world.execute(
         () -> {
