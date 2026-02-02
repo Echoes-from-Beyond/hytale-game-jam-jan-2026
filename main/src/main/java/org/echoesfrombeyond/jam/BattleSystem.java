@@ -97,7 +97,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
   private void spawnEnemy(Ref<EntityStore> player, Store<EntityStore> store) {
     var holder = EntityStore.REGISTRY.newHolder();
 
-    var ma = ModelAsset.getAssetMap().getAsset("Kweebec_Seedling");
+    var ma = ModelAsset.getAssetMap().getAsset("Spark_Living");
     assert ma != null;
 
     var model = Model.createScaledModel(ma, 5.0F);
