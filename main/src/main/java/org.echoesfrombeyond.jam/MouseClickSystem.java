@@ -123,9 +123,6 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             }
           }
 
-          DataContainer[] trash = DataContainer.allUpgrades;
-
-          System.out.println(trash[0].upgrades.getFirst().requirements.getFirst().resourceType);
           if (clickedBuilding == null) {
             return;
           }
