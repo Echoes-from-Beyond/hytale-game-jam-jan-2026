@@ -16,11 +16,8 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
-
-import javax.xml.crypto.Data;
 
 @NullMarked
 public class ChooseBuildingUI
@@ -28,12 +25,13 @@ public class ChooseBuildingUI
   private final ArrayList<DataContainer> BUILDINGS = addPermittedBuildings();
 
   private ArrayList<DataContainer> addPermittedBuildings() {
-    ArrayList<DataContainer> builds =
-        new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
+    ArrayList<DataContainer> builds = new ArrayList<>(Arrays.asList(DataContainer.allUpgrades));
 
-    builds.removeIf(b -> b.buildingType == JamSave.BuildingType.RadioTower
-            || b.buildingType == JamSave.BuildingType.CommandTent
-            || b.buildingType == JamSave.BuildingType.None);
+    builds.removeIf(
+        b ->
+            b.buildingType == JamSave.BuildingType.RadioTower
+                || b.buildingType == JamSave.BuildingType.CommandTent
+                || b.buildingType == JamSave.BuildingType.None);
 
     return builds;
   }
@@ -67,9 +65,13 @@ public class ChooseBuildingUI
           CustomUIEventBindingType.Activating,
           select + " #BuildingSelector",
           EventData.of(ChooseBuildingUIData.BUILDING_NAME, build.name())
-                  // ONLY the first level can be found in the shop
-                  .append(ChooseBuildingUIData.RESOURCE_TYPE, targetBuild.upgrades.getFirst().requirements.getFirst().resourceType)
-              .append(ChooseBuildingUIData.RESOURCE_AMOUNT, String.valueOf(targetBuild.upgrades.getFirst().requirements.getFirst().amount)),
+              // ONLY the first level can be found in the shop
+              .append(
+                  ChooseBuildingUIData.RESOURCE_TYPE,
+                  targetBuild.upgrades.getFirst().requirements.getFirst().resourceType)
+              .append(
+                  ChooseBuildingUIData.RESOURCE_AMOUNT,
+                  String.valueOf(targetBuild.upgrades.getFirst().requirements.getFirst().amount)),
           false);
     }
   }
@@ -117,15 +119,16 @@ public class ChooseBuildingUI
                 (data, s) -> data.buildingName = s,
                 (data) -> data.buildingName)
             .add()
-                .append(
-                        new KeyedCodec<>(RESOURCE_TYPE, BuilderCodec.STRING),
-                        (data, s) -> data.resourceType = s,
-                        (data) -> data.resourceType)
-                .add()
-                .append(new KeyedCodec<>(RESOURCE_AMOUNT, BuilderCodec.STRING),
-                        (data, s) -> data.resourceAmount = Integer.parseInt(s),
-                        (data) -> String.valueOf(data.resourceAmount))
-                .add()
+            .append(
+                new KeyedCodec<>(RESOURCE_TYPE, BuilderCodec.STRING),
+                (data, s) -> data.resourceType = s,
+                (data) -> data.resourceType)
+            .add()
+            .append(
+                new KeyedCodec<>(RESOURCE_AMOUNT, BuilderCodec.STRING),
+                (data, s) -> data.resourceAmount = Integer.parseInt(s),
+                (data) -> String.valueOf(data.resourceAmount))
+            .add()
             .build();
 
     private String buildingName = "";
