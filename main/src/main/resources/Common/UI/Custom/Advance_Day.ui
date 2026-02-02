@@ -3,47 +3,48 @@ $C = "Common.ui";
 $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
-  Anchor: (Width: 740, Height: 480);
+  Anchor: (Width: 500, Height: 340);
 
     Group #Container {
       LayoutMode: Top;
-      Label #AdvanceTitle {
-        Anchor: (Full: 0);
-        Style: (
-              ...$C.@TitleStyle,
-              HorizontalAlignment: Center,
-            );
-            Padding: (Horizontal: 19);
-          }
-      ItemSlotButton #AdvanceButton {
-        Anchor: (Full: 0);
-                  LayoutMode: Full;
-                  Padding: 2;
-                  Style: (
-                    Default: (
-                      Background: #252f3a,
-                    ),
-                    Hovered: (
-                      Background: #c9a050,
-                    ),
-                    Pressed: (
-                      Background: #a08040,
-                    ),
-                    Disabled: (
-                      Background: #1a1e24,
-                    ),
-                      Sounds: $C.@ButtonSounds,
+      Group #LabelDiv {
+        Anchor: (Width: 450, Height: 200);
+        Label #AdvanceTitle {
+                Anchor: (Full: 0);
+                Style: (
+                // taken from TitleStyle in Common.ui, with a patched FontSize because it's really small for a title
+                        FontSize: 24,
+                        VerticalAlignment: Center,
+                        RenderUppercase: true,
+                        TextColor: #b4c8c9,
+                        FontName: "Secondary",
+                        RenderBold: true,
+                        LetterSpacing: 0,
+                        HorizontalAlignment: Center
                     );
-        Label #ButtonTitle {
-                    Anchor: (Full: 0);
-                    Style: (
-                      FontSize: 12,
-                      TextColor: #ffffff,
-                      HorizontalAlignment: Center,
-                      VerticalAlignment: Center,
-                      RenderBold: true,
-                    );
+                    Padding: (Horizontal: 19);
                   }
+      }
+      Group #ButtonDiv {
+        Anchor: (Width: 100, Height: 100);
+
+        ItemSlotButton #AdvanceButton {
+                Anchor: (Full: 0);
+                          LayoutMode: Full;
+                          Padding: 2;
+                          Style: $C.@DefaultButtonStyle;
+                Label #ButtonTitle {
+                            Anchor: (Full: 0);
+                            Style: (
+                              FontSize: 12,
+                              TextColor: #ffffff,
+                              HorizontalAlignment: Center,
+                              VerticalAlignment: Center,
+                              RenderBold: true,
+                            );
+                          }
+      }
+
       }
     }
 }
