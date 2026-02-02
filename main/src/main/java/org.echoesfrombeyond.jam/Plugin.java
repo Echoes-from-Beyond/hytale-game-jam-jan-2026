@@ -4,6 +4,7 @@ import com.hypixel.hytale.assetstore.AssetPack;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.ResourceType;
+import com.hypixel.hytale.math.util.FastRandom;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
 import com.hypixel.hytale.math.vector.Vector3i;
@@ -12,6 +13,7 @@ import com.hypixel.hytale.protocol.packets.camera.SetServerCamera;
 import com.hypixel.hytale.protocol.packets.player.MouseInteraction;
 import com.hypixel.hytale.server.core.asset.AssetModule;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.Rotation;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
@@ -25,6 +27,7 @@ import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import com.hypixel.hytale.server.core.prefab.selection.buffer.PrefabBufferUtil;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -32,6 +35,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.WorldConfig;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.PrefabUtil;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 import org.jspecify.annotations.NullMarked;
@@ -42,7 +46,9 @@ import org.jspecify.annotations.Nullable;
 public class Plugin extends JavaPlugin {
   public static final Vector3d VEC = new Vector3d(1127, 143, -2685);
 
-  public static final Vector3i RADIO_TOWER_LOC = new Vector3i(1127, 143, -2685);
+  public static final Vector3i TENT_LOC = new Vector3i(1127, 143, -2685);
+
+  public static final Vector3i RADIO_LOC = new Vector3i(1135, 143, -2685);
 
   private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
   private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
@@ -288,5 +294,82 @@ public class Plugin extends JavaPlugin {
     ref.getStore()
         .addComponent(
             ref, Teleport.getComponentType(), new Teleport(VEC.clone(), new Vector3f(0, 0, 0)));
+
+    generateFixedPrefabs(current, ref);
+  }
+
+  private static void generateFixedPrefabs(World world, Ref<EntityStore> ref) {
+    world.execute(
+        () -> {
+          JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
+          if (!save.buildings.isEmpty()) {
+            return;
+          }
+
+          var tentPrefabBuffer =
+              PrefabBufferUtil.getCached(
+                  AssetModule.get()
+                      .getAssetPack("org.echoesfrombeyond:Scrapvengers")
+                      .getRoot()
+                      .resolve("Server")
+                      .resolve("Prefabs")
+                      .resolve(JamSave.BuildingType.CommandTent.getPrefabAsset()));
+
+          var towerPrefabBuffer =
+              PrefabBufferUtil.getCached(
+                  AssetModule.get()
+                      .getAssetPack("org.echoesfrombeyond:Scrapvengers")
+                      .getRoot()
+                      .resolve("Server")
+                      .resolve("Prefabs")
+                      .resolve(JamSave.BuildingType.RadioTower.getPrefabAsset()));
+
+          PrefabUtil.paste(
+              tentPrefabBuffer,
+              world,
+              TENT_LOC,
+              Rotation.None,
+              true,
+              new FastRandom(),
+              world.getEntityStore().getStore());
+
+          PrefabUtil.paste(
+              towerPrefabBuffer,
+              world,
+              RADIO_LOC,
+              Rotation.None,
+              true,
+              new FastRandom(),
+              world.getEntityStore().getStore());
+
+          JamSave.Building tent = new JamSave.Building();
+          tent.type = JamSave.BuildingType.CommandTent;
+          tent.min =
+              new Vector3i(
+                  TENT_LOC.x + tentPrefabBuffer.getMinX(),
+                  TENT_LOC.y + tentPrefabBuffer.getMinY(),
+                  TENT_LOC.z + tentPrefabBuffer.getMinZ());
+          tent.max =
+              new Vector3i(
+                  TENT_LOC.x + tentPrefabBuffer.getMaxX(),
+                  TENT_LOC.y + tentPrefabBuffer.getMaxY(),
+                  TENT_LOC.z + tentPrefabBuffer.getMaxZ());
+
+          JamSave.Building tower = new JamSave.Building();
+          tower.type = JamSave.BuildingType.RadioTower;
+          tower.min =
+              new Vector3i(
+                  RADIO_LOC.x + towerPrefabBuffer.getMinX(),
+                  RADIO_LOC.y + towerPrefabBuffer.getMinY(),
+                  RADIO_LOC.z + towerPrefabBuffer.getMinZ());
+          tower.max =
+              new Vector3i(
+                  RADIO_LOC.x + towerPrefabBuffer.getMaxX(),
+                  RADIO_LOC.y + towerPrefabBuffer.getMaxY(),
+                  RADIO_LOC.z + towerPrefabBuffer.getMaxZ());
+
+          save.buildings.add(tent);
+          save.buildings.add(tower);
+        });
   }
 }
