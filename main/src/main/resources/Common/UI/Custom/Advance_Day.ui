@@ -26,7 +26,7 @@ $C.@DecoratedContainer {
                   }
       }
       Group #ButtonDiv {
-        Anchor: (Width: 100, Height: 100);
+        Anchor: (Width: 200, Height: 100);
 
         ItemSlotButton #AdvanceButton {
                 Anchor: (Full: 0);
@@ -36,7 +36,7 @@ $C.@DecoratedContainer {
                 Label #ButtonTitle {
                             Anchor: (Full: 0);
                             Style: (
-                              FontSize: 12,
+                              FontSize: 18,
                               TextColor: #ffffff,
                               HorizontalAlignment: Center,
                               VerticalAlignment: Center,
