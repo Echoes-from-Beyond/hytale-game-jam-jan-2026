@@ -6,16 +6,20 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class GameStageComponent implements Component<EntityStore> {
-  public int day;
-
   /** whether we're in the combat phase */
   public boolean isBattle;
+
+  public float battleTime;
+  public int spawned;
+  public int killed;
 
   public GameStageComponent() {}
 
   public GameStageComponent(GameStageComponent other) {
-    this.day = other.day;
     this.isBattle = other.isBattle;
+    this.battleTime = other.battleTime;
+    this.spawned = other.spawned;
+    this.killed = other.killed;
   }
 
   @SuppressWarnings("MethodDoesntCallSuperMethod")

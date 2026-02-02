@@ -122,16 +122,6 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             }
           }
           // TODO: interact with buildings otherwise
-
-          if (clickedBuilding == null) {
-            var gsp = buffer.getComponent(ref, Plugin.getStageType());
-            if (gsp != null) {
-              gsp.isBattle = true;
-              System.out.println("[TEST] Started battle");
-            }
-            return;
-          }
-
           System.out.println("I clicked on a building!");
         });
   }

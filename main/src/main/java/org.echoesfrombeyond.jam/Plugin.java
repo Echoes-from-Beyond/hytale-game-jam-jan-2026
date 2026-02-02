@@ -53,6 +53,7 @@ public class Plugin extends JavaPlugin {
   private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
   private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
   private static @Nullable ComponentType<EntityStore, GameStageComponent> STAGE_TYPE;
+  private static @Nullable ComponentType<EntityStore, EnemyComponent> ENEMY_TYPE;
   private static @Nullable AssetPack ASSET_PACK;
 
   public static ResourceType<ChunkStore, JamSave> getJamType() {
@@ -70,16 +71,17 @@ public class Plugin extends JavaPlugin {
     return STAGE_TYPE;
   }
 
+  public static ComponentType<EntityStore, EnemyComponent> getEnemyType() {
+    assert ENEMY_TYPE != null;
+    return ENEMY_TYPE;
+  }
+
   public static AssetPack getAssetPack() {
     return AssetModule.get().getAssetPack("org.echoesfrombeyond:Scrapvengers");
   }
 
   public Plugin(JavaPluginInit init) {
     super(init);
-  }
-
-  public static void updateHud(World world) {
-    world.getEntityStore().getStore().invoke(new HudUpdateSystem.Event());
   }
 
   @Override
@@ -91,12 +93,16 @@ public class Plugin extends JavaPlugin {
     STAGE_TYPE =
         getEntityStoreRegistry()
             .registerComponent(GameStageComponent.class, GameStageComponent::new);
+    ENEMY_TYPE =
+        getEntityStoreRegistry().registerComponent(EnemyComponent.class, EnemyComponent::new);
 
     getEntityStoreRegistry().registerSystem(new MouseClickSystem());
     getEntityStoreRegistry().registerSystem(new HudUpdateSystem());
     getEntityStoreRegistry().registerSystem(new PlacePreviewSystem());
     getEntityStoreRegistry().registerSystem(new RemovePreviewSystem());
     getEntityStoreRegistry().registerSystem(new BattleSystem());
+    getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
+    getEntityStoreRegistry().registerSystem(new EnemyDamageTowerSystem());
     getEntityStoreRegistry()
         .registerSystem(new CancelSystem<>(DropItemEvent.PlayerRequest.class) {});
     getEntityStoreRegistry().registerSystem(new CancelSystem<>(SwitchActiveSlotEvent.class) {});

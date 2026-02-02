@@ -113,6 +113,7 @@ public class JamSave implements Resource<ChunkStore> {
           .build();
 
   public int day;
+  public int towerHealth;
   public int colonists;
   public int food;
   public int water;
@@ -121,11 +122,13 @@ public class JamSave implements Resource<ChunkStore> {
 
   public JamSave() {
     this.day = 1;
+    this.towerHealth = 10;
     this.buildings = new ArrayList<>();
   }
 
   public JamSave(JamSave other) {
     this.day = other.day;
+    this.towerHealth = other.towerHealth;
     this.colonists = other.colonists;
     this.food = other.food;
     this.water = other.water;

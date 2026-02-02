@@ -1,0 +1,53 @@
+{
+  "Type": "Generic",
+  "MotionControllerList": [
+    {
+      "Type": "Walk",
+      "MaxWalkSpeed": 3,
+      "Gravity": 10,
+      "MaxFallSpeed": 8,
+      "Acceleration": 10,
+      "MaxRotationSpeed": 360,
+      "MaxHeadRotationSpeed": 360
+    }
+  ],
+  "Appearance": "Mannequin",
+  "MaxHealth": {
+    "Compute": "MaxHealth"
+  },
+  "Parameters": {
+    "MaxHealth": {
+      "Value": 10,
+      "Description": "Max health for the NPC"
+    }
+  },
+  "Instructions": [
+    {
+      "Instructions": [
+        {
+          "Continue": true,
+          "Sensor": {
+            "Type": "Player",
+            "Range": 10
+          },
+          "HeadMotion": {
+            "Type": "Watch"
+          }
+        },
+        {
+          "Sensor": {
+            "Type": "Path",
+            "Range": 100,
+            "PathType": "TransientPath"
+          },
+          "BodyMotion": {
+            "Type": "Seek",
+            "StopDistance": 1,
+            "SlowdownDistance": 1
+          }
+        }
+      ]
+    }
+  ],
+  "NameTranslationKey": "server.npcRoles.Empty_Role.name"
+}
