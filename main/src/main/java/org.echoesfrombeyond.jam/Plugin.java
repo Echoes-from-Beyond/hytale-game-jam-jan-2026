@@ -95,7 +95,7 @@ public class Plugin extends JavaPlugin {
     getCodecRegistry(Interaction.CODEC)
         .register("Open_Select_Building", OpenSelectBuildingUI.class, OpenSelectBuildingUI.CODEC);
     getCodecRegistry(Interaction.CODEC)
-            .register("Open_Advance_Day", OpenAdvanceDayUI.class, OpenAdvanceDayUI.CODEC);
+        .register("Open_Advance_Day", OpenAdvanceDayUI.class, OpenAdvanceDayUI.CODEC);
 
     PacketAdapters.registerInbound(
         (PlayerPacketWatcher)

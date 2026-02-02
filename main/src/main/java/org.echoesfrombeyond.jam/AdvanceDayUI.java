@@ -19,18 +19,15 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDayData> {
   public AdvanceDayUI(PlayerRef playerRef) {
-    super(
-            playerRef,
-            CustomPageLifetime.CanDismissOrCloseThroughInteraction,
-            AdvanceDayData.CODEC);
+    super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, AdvanceDayData.CODEC);
   }
 
   @Override
   public void build(
-          Ref<EntityStore> ref,
-          UICommandBuilder commandBuilder,
-          UIEventBuilder eventBuilder,
-          Store<EntityStore> store) {
+      Ref<EntityStore> ref,
+      UICommandBuilder commandBuilder,
+      UIEventBuilder eventBuilder,
+      Store<EntityStore> store) {
     commandBuilder.append("Advance_Day.ui");
     String groupSelect = "#Container";
 
@@ -41,40 +38,38 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
 
     // fyi you can't use anything other than string because of this method
     eventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            groupSelect + " #AdvanceButton",
-            EventData.of(AdvanceDayData.CLICKED_FIELD, String.valueOf(true)),
-            false);
+        CustomUIEventBindingType.Activating,
+        groupSelect + " #AdvanceButton",
+        EventData.of(AdvanceDayData.CLICKED_FIELD, String.valueOf(true)),
+        false);
   }
 
   @Override
-  public void handleDataEvent(
-          Ref<EntityStore> ref, Store<EntityStore> store, AdvanceDayData data) {
+  public void handleDataEvent(Ref<EntityStore> ref, Store<EntityStore> store, AdvanceDayData data) {
     System.out.println("Day advanced");
 
     var playerRefRef = this.playerRef.getReference();
     Player player =
-            playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
+        playerRefRef != null ? store.getComponent(playerRefRef, Player.getComponentType()) : null;
 
     if (player == null || store.getComponent(ref, Plugin.getPlaceType()) != null) {
       return;
     }
 
     player.getPageManager().setPage(ref, store, Page.None);
-
   }
 
   public static class AdvanceDayData {
     static final String CLICKED_FIELD = "Clicked";
 
     public static final BuilderCodec<AdvanceDayData> CODEC =
-            BuilderCodec.builder(AdvanceDayData.class, AdvanceDayData::new)
-                    .append(
-                            new KeyedCodec<>(CLICKED_FIELD, BuilderCodec.STRING),
-                            (data, s) -> data.clicked = s,
-                            (data) -> data.clicked)
-                    .add()
-                    .build();
+        BuilderCodec.builder(AdvanceDayData.class, AdvanceDayData::new)
+            .append(
+                new KeyedCodec<>(CLICKED_FIELD, BuilderCodec.STRING),
+                (data, s) -> data.clicked = s,
+                (data) -> data.clicked)
+            .add()
+            .build();
 
     private String clicked = "false";
 

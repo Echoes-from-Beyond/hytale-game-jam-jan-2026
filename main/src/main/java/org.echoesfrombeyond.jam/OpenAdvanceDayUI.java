@@ -12,12 +12,13 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class OpenAdvanceDayUI extends SimpleInstantInteraction {
   public static final BuilderCodec<OpenAdvanceDayUI> CODEC =
-          BuilderCodec.builder(
-             OpenAdvanceDayUI.class, OpenAdvanceDayUI::new, SimpleInstantInteraction.CODEC).build();
+      BuilderCodec.builder(
+              OpenAdvanceDayUI.class, OpenAdvanceDayUI::new, SimpleInstantInteraction.CODEC)
+          .build();
 
   @Override
   protected void firstRun(
-          InteractionType type, InteractionContext context, CooldownHandler handler) {
+      InteractionType type, InteractionContext context, CooldownHandler handler) {
     var buffer = context.getCommandBuffer();
     if (buffer == null) return;
 
@@ -25,8 +26,8 @@ public class OpenAdvanceDayUI extends SimpleInstantInteraction {
     var player = buffer.getComponent(ref, Player.getComponentType());
     var playerRef = buffer.getComponent(ref, PlayerRef.getComponentType());
     if (player == null
-            || playerRef == null
-            || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
+        || playerRef == null
+        || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
 
     player.getPageManager().openCustomPage(ref, ref.getStore(), new AdvanceDayUI(playerRef));
   }
