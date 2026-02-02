@@ -133,27 +133,6 @@
     },
     {
       "x": -2,
-      "y": 0,
-      "z": -2,
-      "name": "Cloth_Roof_Red_Flap",
-      "rotation": 2
-    },
-    {
-      "x": -2,
-      "y": 1,
-      "z": -2,
-      "name": "Cloth_Roof_Red_Vertical",
-      "rotation": 2
-    },
-    {
-      "x": -2,
-      "y": 2,
-      "z": -2,
-      "name": "Cloth_Roof_Red_Vertical",
-      "rotation": 2
-    },
-    {
-      "x": -2,
       "y": 3,
       "z": -1,
       "name": "Cloth_Roof_Red",
@@ -215,24 +194,10 @@
     },
     {
       "x": -1,
-      "y": 2,
-      "z": -2,
-      "name": "Cloth_Roof_Red_Vertical",
-      "rotation": 2
-    },
-    {
-      "x": -1,
       "y": 0,
       "z": -1,
       "name": "Rubble_Basalt",
       "support": 15
-    },
-    {
-      "x": -1,
-      "y": 3,
-      "z": -1,
-      "name": "Cloth_Roof_Red",
-      "rotation": 2
     },
     {
       "x": -1,
@@ -556,9 +521,9 @@
           },
           "container": {
             "Position": {
-              "X": 7,
-              "Y": 55,
-              "Z": 2
+              "X": 26,
+              "Y": 54,
+              "Z": 1
             },
             "Custom": false,
             "AllowViewing": true,
@@ -810,27 +775,6 @@
     },
     {
       "x": -2,
-      "y": 0,
-      "z": -2,
-      "name": "Empty",
-      "level": 0
-    },
-    {
-      "x": -2,
-      "y": 1,
-      "z": -2,
-      "name": "Empty",
-      "level": 0
-    },
-    {
-      "x": -2,
-      "y": 2,
-      "z": -2,
-      "name": "Empty",
-      "level": 0
-    },
-    {
-      "x": -2,
       "y": 3,
       "z": -1,
       "name": "Empty",
@@ -901,21 +845,7 @@
     },
     {
       "x": -1,
-      "y": 2,
-      "z": -2,
-      "name": "Empty",
-      "level": 0
-    },
-    {
-      "x": -1,
       "y": 0,
-      "z": -1,
-      "name": "Empty",
-      "level": 0
-    },
-    {
-      "x": -1,
-      "y": 3,
       "z": -1,
       "name": "Empty",
       "level": 0
