@@ -14,9 +14,12 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import it.unimi.dsi.fastutil.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.echoesfrombeyond.jam.data.DataContainer;
+import org.echoesfrombeyond.jam.data.UpgradeRequirement;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -49,17 +52,16 @@ public class ChooseBuildingUI
       commandBuilder.append("#BuildingGroup", "Choose_Building_Fragment.ui");
       commandBuilder.set(select + " #BuildingName.Text", build.name());
 
+      List<UpgradeRequirement> ur = targetBuild.upgrades.getFirst().requirements;
+      Pair<String, String> compactedUr = compactRequirements(ur);
+
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,
           select + " #BuildingSelector",
           EventData.of(ChooseBuildingUIData.BUILDING_NAME, build.name())
               // ONLY the first level can be found in the shop
-              .append(
-                  ChooseBuildingUIData.RESOURCE_TYPE,
-                  targetBuild.upgrades.getFirst().requirements.getFirst().resourceType)
-              .append(
-                  ChooseBuildingUIData.RESOURCE_AMOUNT,
-                  String.valueOf(targetBuild.upgrades.getFirst().requirements.getFirst().amount)),
+              .append(ChooseBuildingUIData.RESOURCE_TYPES, compactedUr.first())
+              .append(ChooseBuildingUIData.RESOURCE_AMOUNTS, compactedUr.second()),
           false);
     }
   }
@@ -88,10 +90,21 @@ public class ChooseBuildingUI
         () -> {
           var preview = new PlacePreviewComponent();
           preview.building = res.get();
-          preview.resourceType = data.getResourceType();
-          preview.amountSpent = data.getResourceAmount();
+          preview.resourceTypes = data.getResourceTypes();
+          preview.amountsSpent = data.getResourceAmounts();
           store.addComponent(ref, Plugin.getPlaceType(), preview);
         });
+  }
+
+  private Pair<String, String> compactRequirements(List<UpgradeRequirement> reqs) {
+    StringBuilder comps = new StringBuilder();
+    StringBuilder amts = new StringBuilder();
+    for (UpgradeRequirement req : reqs) {
+      comps.append(req.resourceType).append(",");
+      amts.append(req.amount).append(",");
+    }
+
+    return Pair.of(comps.toString(), amts.toString());
   }
 
   public static class ChooseBuildingUIData {
@@ -99,8 +112,8 @@ public class ChooseBuildingUI
     // limitation with the client
     // doesn't this use JSONs? those support numbers lol
     static final String BUILDING_NAME = "BuildingName";
-    static final String RESOURCE_TYPE = "ResourceType";
-    static final String RESOURCE_AMOUNT = "ResourceAmount";
+    static final String RESOURCE_TYPES = "ResourceType";
+    static final String RESOURCE_AMOUNTS = "ResourceAmount";
 
     public static final BuilderCodec<ChooseBuildingUIData> CODEC =
         BuilderCodec.builder(ChooseBuildingUIData.class, ChooseBuildingUIData::new)
@@ -110,31 +123,31 @@ public class ChooseBuildingUI
                 (data) -> data.buildingName)
             .add()
             .append(
-                new KeyedCodec<>(RESOURCE_TYPE, BuilderCodec.STRING),
-                (data, s) -> data.resourceType = s,
-                (data) -> data.resourceType)
+                new KeyedCodec<>(RESOURCE_TYPES, BuilderCodec.STRING),
+                (data, s) -> data.resourceTypes = s,
+                (data) -> data.resourceTypes)
             .add()
             .append(
-                new KeyedCodec<>(RESOURCE_AMOUNT, BuilderCodec.STRING),
-                (data, s) -> data.resourceAmount = Integer.parseInt(s),
-                (data) -> String.valueOf(data.resourceAmount))
+                new KeyedCodec<>(RESOURCE_AMOUNTS, BuilderCodec.STRING),
+                (data, s) -> data.resourceAmounts = s,
+                (data) -> data.resourceAmounts)
             .add()
             .build();
 
     private String buildingName = "";
-    private String resourceType = "";
-    private int resourceAmount;
+    private String resourceTypes = "";
+    private String resourceAmounts = "";
 
     public String getBuildingName() {
       return buildingName;
     }
 
-    public String getResourceType() {
-      return resourceType;
+    public String getResourceTypes() {
+      return resourceTypes;
     }
 
-    public int getResourceAmount() {
-      return resourceAmount;
+    public String getResourceAmounts() {
+      return resourceAmounts;
     }
   }
 }

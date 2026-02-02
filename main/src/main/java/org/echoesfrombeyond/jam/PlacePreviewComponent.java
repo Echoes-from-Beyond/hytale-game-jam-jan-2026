@@ -14,10 +14,10 @@ public class PlacePreviewComponent implements Component<EntityStore> {
   public JamSave.BuildingType building;
 
   /** Resource used in purchase */
-  public String resourceType = "";
+  public String resourceTypes = "";
 
   /** Resource cost */
-  public int amountSpent;
+  public String amountsSpent;
 
   /** Ignore these, they're only used by the preview system. */
   public @Nullable Vector3i oldMin;

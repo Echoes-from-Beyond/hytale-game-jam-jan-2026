@@ -92,32 +92,41 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
               return;
             }
 
-            // TODO: feedback to player
-            switch (placement.resourceType) {
-              case "scrap":
-                if (save.scrap < placement.amountSpent) {
-                  return;
-                }
+            // these should be equal length; if not, there is a bug either with setting defaults for
+            // data classes
+            // or how the event is registered for choosing buildings
+            String[] splitTypes = placement.resourceTypes.split(",");
+            String[] splitAmounts = placement.amountsSpent.split(",");
 
-                save.scrap -= placement.amountSpent;
-                break;
-              case "food":
-                if (save.food < placement.amountSpent) {
-                  return;
-                }
+            // TODO: feedback to player in case of lacking resources
+            for (int j = 0; j < splitTypes.length; j++) {
+              int value = Integer.parseInt(splitAmounts[j]);
+              switch (splitTypes[j]) {
+                case "scrap":
+                  if (save.scrap < value) {
+                    return;
+                  }
 
-                save.food -= placement.amountSpent;
-                break;
-              case "water":
-                if (save.water < placement.amountSpent) {
-                  return;
-                }
+                  save.scrap -= value;
+                  break;
+                case "food":
+                  if (save.food < value) {
+                    return;
+                  }
 
-                save.water -= placement.amountSpent;
-                break;
-              default:
-                // just do nothing for badly configured previews
-                return;
+                  save.food -= value;
+                  break;
+                case "water":
+                  if (save.water < value) {
+                    return;
+                  }
+
+                  save.water -= value;
+                  break;
+                default:
+                  // just do nothing for badly configured previews
+                  return;
+              }
             }
 
             PrefabUtil.paste(

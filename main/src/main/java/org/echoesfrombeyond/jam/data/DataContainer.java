@@ -10,22 +10,23 @@ public class DataContainer {
   public JamSave.BuildingType buildingType;
   public List<Upgrade> upgrades;
   public String resourceGenerated;
+  public String description;
 
   public DataContainer(
       JamSave.BuildingType buildingType, List<Upgrade> upgrades, String resourceGenerated) {
     this.buildingType = buildingType;
     this.upgrades = upgrades;
     this.resourceGenerated = resourceGenerated;
+    // for building interact UIs in a sec
+    this.description = "";
   }
 
   // look, this is quite possibly the worst thing I've ever made
   // I guess we're not that kweeback after all :pensive:
   // TODO: balancing
   public static DataContainer[] allUpgrades = {
-    // btw the event API for interactions is so bad that we can only have one resource requirement
-    // there doesn't look to be a way to request an array of data from the player in a button
-    // there IS potentially an ugly workaround for this (field_N where N is up to a fixed maximum of
-    // requirements) but idk if we should bother
+    // ignore the comment that was here before, same effect was achieved by forcing everything into
+    // the same string
     new DataContainer(
         JamSave.BuildingType.RadioTower,
         Arrays.asList(
@@ -48,12 +49,16 @@ public class DataContainer {
         Arrays.asList(
             new Upgrade(
                 1,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 3)),
                 1,
                 0),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
                 2,
                 2)),
         UpgradeRequirement.resourceTypes[2]),
@@ -76,12 +81,16 @@ public class DataContainer {
         Arrays.asList(
             new Upgrade(
                 1,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6)),
                 3,
                 1),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 14)),
                 2,
                 3)),
         UpgradeRequirement.resourceTypes[0]),
@@ -104,12 +113,16 @@ public class DataContainer {
         Arrays.asList(
             new Upgrade(
                 1,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
                 0,
                 0),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10)),
+                Arrays.asList(
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 10),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 4)),
                 0,
                 0)),
         UpgradeRequirement.resourceTypes[0])
