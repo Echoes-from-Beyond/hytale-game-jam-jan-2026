@@ -50,7 +50,7 @@ public class Plugin extends JavaPlugin {
 
   public static final Vector3i RADIO_LOC = new Vector3i(1135, 143, -2685);
 
-  public static final Vector3i ENEMY_SPAWN_LOC = new Vector3i(1145, 150, -2687);
+  public static final Vector3i ENEMY_SPAWN_LOC = new Vector3i(1178, 145, -2658);
 
   private static @Nullable ResourceType<ChunkStore, JamSave> JAM_TYPE;
   private static @Nullable ComponentType<EntityStore, PlacePreviewComponent> PLACE_TYPE;
