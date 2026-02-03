@@ -401,10 +401,11 @@ public class Plugin extends JavaPlugin {
               new FastRandom(),
               world.getEntityStore().getStore());
 
+          var spawnloc = ENEMY_SPAWN_LOC.clone().add(0, 3, 0);
           PrefabUtil.paste(
               spawnIndicatorPrefabBuffer,
               world,
-              ENEMY_SPAWN_LOC,
+              spawnloc,
               Rotation.None,
               true,
               new FastRandom(),
@@ -437,7 +438,6 @@ public class Plugin extends JavaPlugin {
                   RADIO_LOC.z + towerPrefabBuffer.getMaxZ());
 
           JamSave.Building spawnIndicator = new JamSave.Building();
-          var spawnloc = ENEMY_SPAWN_LOC.clone().add(0, 3, 0);
           spawnIndicator.type = JamSave.BuildingType.SpawnIndicator;
           spawnIndicator.min =
               new Vector3i(
