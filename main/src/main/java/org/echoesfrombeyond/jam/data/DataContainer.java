@@ -210,7 +210,21 @@ public class DataContainer {
         personal mission, you still
         need to offer them a place to
         stay.
-        """)
+        """),
+    new DataContainer(
+            JamSave.BuildingType.SpawnIndicator,
+            Arrays.asList(
+                    new Upgrade()
+            ),
+            UpgradeRequirement.resourceTypes[0],
+        """
+        Some of the automatons seem to
+        spend a lot of time around these.
+        Perhaps this is some kind of
+        a wireless charging technology,
+        or a controller.
+        """
+    )
   };
 
   public static ArrayList<DataContainer> placeableBuildings() {
@@ -220,6 +234,7 @@ public class DataContainer {
         b ->
             b.buildingType == JamSave.BuildingType.RadioTower
                 || b.buildingType == JamSave.BuildingType.CommandTent
+                || b.buildingType == JamSave.BuildingType.SpawnIndicator
                 || b.buildingType == JamSave.BuildingType.None);
 
     return builds;
