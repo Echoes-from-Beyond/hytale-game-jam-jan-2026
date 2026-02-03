@@ -38,6 +38,27 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
     // les FREAKING go
     commandBuilder.set(groupSelect + " #ButtonTitle.Text", "LET'S GO");
 
+    var jam =
+        store
+            .getExternalData()
+            .getWorld()
+            .getChunkStore()
+            .getStore()
+            .getResource(Plugin.getJamType());
+
+    if (jam.buildings.stream()
+        .noneMatch(building -> building.type == JamSave.BuildingType.Turret)) {
+      commandBuilder.set(
+          groupSelect + " #WarningDiv #WarningMessage.Text",
+          "You have not built any turrets!\nYour radio tower is undefended!");
+    } else if (jam.buildings.stream().anyMatch(building -> building.type.needsColonist)
+        && jam.buildings.stream()
+            .noneMatch(building -> building.type.needsColonist && building.hasColonist())) {
+      commandBuilder.set(
+          groupSelect + " #WarningDiv #WarningMessage.Text",
+          "You have not assigned any colonists!\nAdvancing the day won't produce resources.");
+    }
+
     // fyi you can't use anything other than string because of this method
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,

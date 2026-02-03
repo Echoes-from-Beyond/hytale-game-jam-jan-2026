@@ -8,7 +8,7 @@ $C.@DecoratedContainer {
     Group #Container {
       LayoutMode: Top;
       Group #LabelDiv {
-        Anchor: (Width: 450, Height: 200);
+        Anchor: (Width: 450, Height: 150);
         Label #AdvanceTitle {
                 Anchor: (Full: 0);
                 Style: (
@@ -25,6 +25,23 @@ $C.@DecoratedContainer {
                     Padding: (Horizontal: 19);
                   }
       }
+
+      Group #WarningDiv {
+        Anchor: (Width: 450, Height: 40);
+        Label #WarningMessage {
+          Anchor: (Full: 0);
+          Style: (
+                                  FontSize: 12,
+                                  VerticalAlignment: Start,
+                                  RenderUppercase: true,
+                                  TextColor: #b4c8c9,
+                                  FontName: "Secondary",
+                                  LetterSpacing: 0,
+                                  HorizontalAlignment: Center
+                              );
+        }
+      }
+
       Group #ButtonDiv {
         Anchor: (Width: 200, Height: 100);
 
