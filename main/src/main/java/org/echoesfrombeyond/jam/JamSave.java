@@ -172,14 +172,24 @@ public class JamSave implements Resource<ChunkStore> {
   public int scrap;
   public List<Building> buildings;
 
-  public JamSave() {
+  public void assignInitialValues() {
     this.day = 1;
     this.towerHealth = 10;
     this.food = 20;
     this.scrap = 10;
     this.water = 10;
     this.colonists = 3;
+
+    buildings.removeIf(
+        building ->
+            !(building.type == JamSave.BuildingType.CommandTent
+                || building.type == JamSave.BuildingType.RadioTower));
+  }
+
+  public JamSave() {
     this.buildings = new CopyOnWriteArrayList<>();
+
+    assignInitialValues();
   }
 
   public JamSave(JamSave other) {

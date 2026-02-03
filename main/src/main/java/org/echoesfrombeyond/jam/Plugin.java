@@ -4,6 +4,7 @@ import com.hypixel.hytale.assetstore.AssetPack;
 import com.hypixel.hytale.component.ComponentType;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.ResourceType;
+import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.math.util.FastRandom;
 import com.hypixel.hytale.math.vector.Vector3d;
 import com.hypixel.hytale.math.vector.Vector3f;
@@ -23,6 +24,10 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.io.adapter.PacketAdapters;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketWatcher;
+import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageSystems;
+import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Interaction;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -36,7 +41,9 @@ import com.hypixel.hytale.server.core.universe.world.WorldConfig;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.PrefabUtil;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -80,6 +87,34 @@ public class Plugin extends JavaPlugin {
 
   public static AssetPack getAssetPack() {
     return AssetModule.get().getAssetPack("org.echoesfrombeyond:Scrapvengers");
+  }
+
+  public static void clearAllEnemies(World world) {
+    var npct = NPCEntity.getComponentType();
+    assert npct != null;
+
+    world
+        .getEntityStore()
+        .getStore()
+        .forEachChunk(
+            Query.and(NPCEntity.getComponentType(), Query.not(DeathComponent.getComponentType())),
+            (chunk, buffer) -> {
+              for (int i = 0; i < chunk.size(); i++) {
+                var npc = chunk.getComponent(i, npct);
+                if (npc == null) continue;
+
+                var role = npc.getRole();
+                if (role == null) continue;
+
+                if (Objects.equals(role.getRoleName(), "Sim_Enemy")) {
+                  DamageSystems.executeDamage(
+                      i,
+                      chunk,
+                      buffer,
+                      new Damage(Damage.NULL_SOURCE, new DamageCause("OutOfWorld"), 1000f));
+                }
+              }
+            });
   }
 
   public Plugin(JavaPluginInit init) {
@@ -195,7 +230,10 @@ public class Plugin extends JavaPlugin {
 
                     if (!world.getName().equals("World-" + playerRef.getUuid()))
                       leaveSimWorld(playerRef);
-                    else joinSimWorld(playerRef);
+                    else {
+                      clearAllEnemies(world);
+                      joinSimWorld(playerRef);
+                    }
                   });
             });
 

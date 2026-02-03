@@ -22,6 +22,13 @@ public class GameStageComponent implements Component<EntityStore> {
     this.killed = other.killed;
   }
 
+  public void reset() {
+    isBattle = false;
+    battleTime = 0;
+    spawned = 0;
+    killed = 0;
+  }
+
   @SuppressWarnings("MethodDoesntCallSuperMethod")
   @Override
   public Component<EntityStore> clone() {

@@ -61,7 +61,24 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
           if (jam.towerHealth <= 0 && jam.day <= FINAL_DAY) {
+            Plugin.clearAllEnemies(world);
             System.out.println("YOU LOST...");
+
+            for (var building : jam.buildings) {
+              if (building.type == JamSave.BuildingType.CommandTent
+                  || building.type == JamSave.BuildingType.RadioTower) continue;
+
+              for (int x = building.min.x; x <= building.max.x; x++) {
+                for (int y = building.min.y; y <= building.max.y; y++) {
+                  for (int z = building.min.z; z <= building.max.z; z++) {
+                    world.setBlock(x, y, z, "Empty");
+                  }
+                }
+              }
+            }
+
+            jam.assignInitialValues();
+            stage.reset();
             return;
           }
 
@@ -74,10 +91,8 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             } else {
               System.out.println("YOU SURVIVED THE NIGHT...");
             }
-            stage.killed = 0;
-            stage.spawned = 0;
-            stage.isBattle = false;
-            stage.battleTime = 0;
+
+            stage.reset();
             return;
           }
 
