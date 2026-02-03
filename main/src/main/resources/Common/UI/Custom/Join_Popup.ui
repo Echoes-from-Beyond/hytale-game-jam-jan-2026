@@ -3,15 +3,44 @@ $C = "Common.ui";
 $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
+  Anchor: (Width: 740, Height: 480);
   Group {
-  Label #TestTitle {
-              Anchor: (Full: 0);
-              Style: (
-                    ...$C.@TitleStyle,
-                    HorizontalAlignment: Center,
-                  );
-                  Padding: (Horizontal: 19);
-              Text: "Test";
-                }
+    LayoutMode: Top;
+    Group {
+      // what has intellij done to all the indentation in these
+      Anchor: (Width: 700, Height: 40);
+      Label #JoinTitle {
+                  Anchor: (Full: 0);
+                  Style: (
+                        FontSize: 24,
+                        VerticalAlignment: Center,
+                        RenderUppercase: true,
+                        TextColor: #b4c8c9,
+                        FontName: "Secondary",
+                        RenderBold: true,
+                        LetterSpacing: 0,
+                        HorizontalAlignment: Center
+                      );
+                      Padding: (Horizontal: 19);
+                  Text: "HYTALE MODJAM 2026 - SCRAPVENGERS";
+                    }
+    }
+
+    Group {
+          Anchor: (Width: 700, Height: 440);
+          Label #JoinText {
+                      Anchor: (Full: 0);
+                      Style: (
+                            FontSize: 12,
+                            VerticalAlignment: Start,
+                            TextColor: #b4c8c9,
+                            FontName: "Secondary",
+                            LetterSpacing: 0,
+                            HorizontalAlignment: Start
+                          );
+                          Padding: (Horizontal: 19);
+                        }
+        }
   }
+
 }

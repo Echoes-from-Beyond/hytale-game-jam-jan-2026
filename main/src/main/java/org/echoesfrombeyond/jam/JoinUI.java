@@ -22,5 +22,6 @@ public class JoinUI extends CustomUIPage {
       @NotNull UIEventBuilder eventBuilder,
       @NotNull Store<EntityStore> store) {
     commandBuilder.append("Join_Popup.ui");
+    commandBuilder.set("#JoinText.Text", "test");
   }
 }

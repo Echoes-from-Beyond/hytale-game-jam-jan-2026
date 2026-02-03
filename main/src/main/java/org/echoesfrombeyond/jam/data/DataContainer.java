@@ -53,14 +53,14 @@ public class DataContainer {
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 3)),
                 1,
-                0),
+                1),
             new Upgrade(
                 2,
                 Arrays.asList(
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
                 2,
-                2)),
+                1)),
         UpgradeRequirement.resourceTypes[2]),
     new DataContainer(
         JamSave.BuildingType.Well,
@@ -74,7 +74,7 @@ public class DataContainer {
                 2,
                 Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 12)),
                 2,
-                4)),
+                1)),
         UpgradeRequirement.resourceTypes[1]),
     new DataContainer(
         JamSave.BuildingType.ScavengerPort,
@@ -92,7 +92,7 @@ public class DataContainer {
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 13),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 14)),
                 2,
-                3)),
+                1)),
         UpgradeRequirement.resourceTypes[0]),
     new DataContainer(
         JamSave.BuildingType.Turret,
