@@ -65,8 +65,7 @@ public class BuildingInteractUI
 
       if (matchingData.buildingType == JamSave.BuildingType.RadioTower) {
         var radioUpgrade = matchingData.upgrades.get(1).requirements.getFirst();
-        commandBuilder.set(
-            "#Ingr.Text", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
+        commandBuilder.set("#Ingr.Text", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
         commandBuilder.set("#Upgr.Text", "UPGRADE\n100 SCRAP");
       } else {
         commandBuilder.set("#UpgradeButton.Disabled", true);

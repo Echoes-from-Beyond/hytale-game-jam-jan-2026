@@ -310,9 +310,9 @@ public class Plugin extends JavaPlugin {
     var relativeToPlayer = buildingPos.clone().subtract(playerPos).add(-7, 5, -7);
 
     ServerCameraSettings settings = new ServerCameraSettings();
-    settings.positionLerpSpeed = 0.2f;
-    settings.rotationLerpSpeed = 0.2f;
-    settings.distance = 25.0f;
+    settings.positionLerpSpeed = 0.05f;
+    settings.rotationLerpSpeed = 0.05f;
+    settings.distance = 5.0f;
     settings.displayCursor = true;
     settings.isFirstPerson = false;
     settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
@@ -333,8 +333,8 @@ public class Plugin extends JavaPlugin {
 
   public static void setDefaultCameraPosition(PlayerRef playerRef) {
     ServerCameraSettings settings = new ServerCameraSettings();
-    settings.positionLerpSpeed = 0.2f;
-    settings.rotationLerpSpeed = 0.2f;
+    settings.positionLerpSpeed = 0.1f;
+    settings.rotationLerpSpeed = 0.1f;
     settings.distance = 25.0f;
     settings.displayCursor = true;
     settings.isFirstPerson = false;
