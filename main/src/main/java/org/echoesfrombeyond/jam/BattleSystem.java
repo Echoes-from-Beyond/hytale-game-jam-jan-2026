@@ -56,6 +56,8 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
     var battleTime = stage.battleTime;
     var world = store.getExternalData().getWorld();
 
+    var ref = archetypeChunk.getReferenceTo(i);
+
     world.execute(
         () -> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
@@ -79,6 +81,8 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
 
             jam.assignInitialValues();
             stage.reset();
+
+            if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
             return;
           }
 
@@ -100,7 +104,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             return;
           stage.battleTime = 0;
 
-          spawnEnemy(archetypeChunk.getReferenceTo(i), store);
+          spawnEnemy(ref, store);
           if (++stage.spawned < currentDayData.spawns) {
             System.out.println("Spawned enemy");
           } else {
