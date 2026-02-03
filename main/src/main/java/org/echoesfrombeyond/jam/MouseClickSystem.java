@@ -22,7 +22,7 @@ import org.jspecify.annotations.NullMarked;
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
   public static int BUILDING_PLACE_GAP = 5;
   public static int SPAWN_DISALLOW_AREA = 10;
-  public static int MAX_DISTANCE_FROM_RADIO_TOWER = 50;
+  public static int MAX_DISTANCE_FROM_RADIO_TOWER = 75;
 
   public MouseClickSystem() {
     super(MouseClickEvent.class);

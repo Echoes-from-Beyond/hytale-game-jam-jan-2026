@@ -8,6 +8,7 @@ import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.model.config.Model;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
@@ -68,7 +69,10 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
           if (stage.killed >= currentDayData.spawns) {
             ++jam.day;
             stage.reset();
-            if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
+            if (ref.isValid()) {
+              world.sendMessage(Message.raw("You survived the attack!"));
+              store.invoke(ref, new HudUpdateSystem.Event());
+            }
             return;
           }
 

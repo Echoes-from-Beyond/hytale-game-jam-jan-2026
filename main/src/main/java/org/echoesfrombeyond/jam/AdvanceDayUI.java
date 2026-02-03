@@ -85,6 +85,8 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
     var world = store.getExternalData().getWorld();
     world.execute(
         () -> {
+          world.sendMessage(Message.raw("Starting combat!"));
+
           JamSave save = world.getChunkStore().getStore().getResource(Plugin.getJamType());
           var gs = store.getComponent(ref, Plugin.getStageType());
           if (gs != null) gs.isBattle = true;
