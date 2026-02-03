@@ -437,17 +437,18 @@ public class Plugin extends JavaPlugin {
                   RADIO_LOC.z + towerPrefabBuffer.getMaxZ());
 
           JamSave.Building spawnIndicator = new JamSave.Building();
+          var spawnloc = ENEMY_SPAWN_LOC.clone().add(0, 3, 0);
           spawnIndicator.type = JamSave.BuildingType.SpawnIndicator;
           spawnIndicator.min =
               new Vector3i(
-                  ENEMY_SPAWN_LOC.x + spawnIndicatorPrefabBuffer.getMinX(),
-                  ENEMY_SPAWN_LOC.y + spawnIndicatorPrefabBuffer.getMinY(),
-                  ENEMY_SPAWN_LOC.z + spawnIndicatorPrefabBuffer.getMinZ());
+                  spawnloc.x + spawnIndicatorPrefabBuffer.getMinX(),
+                  spawnloc.y + spawnIndicatorPrefabBuffer.getMinY(),
+                  spawnloc.z + spawnIndicatorPrefabBuffer.getMinZ());
           spawnIndicator.max =
               new Vector3i(
-                  ENEMY_SPAWN_LOC.x + spawnIndicatorPrefabBuffer.getMaxX(),
-                  ENEMY_SPAWN_LOC.y + spawnIndicatorPrefabBuffer.getMaxY(),
-                  ENEMY_SPAWN_LOC.z + spawnIndicatorPrefabBuffer.getMaxZ());
+                  spawnloc.x + spawnIndicatorPrefabBuffer.getMaxX(),
+                  spawnloc.y + spawnIndicatorPrefabBuffer.getMaxY(),
+                  spawnloc.z + spawnIndicatorPrefabBuffer.getMaxZ());
 
           save.buildings.add(tent);
           save.buildings.add(tower);
