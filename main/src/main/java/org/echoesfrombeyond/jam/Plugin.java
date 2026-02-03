@@ -301,6 +301,37 @@ public class Plugin extends JavaPlugin {
       OpenJoinUI.openJoinPopup(ref, playerRef);
     }
 
+    setDefaultCameraPosition(playerRef);
+  }
+
+  public static void setBuildingFocusCameraPosition(PlayerRef playerRef, Vector3i buildingPos) {
+    var playerPos = playerRef.getTransform().getPosition().toVector3i();
+
+    var relativeToPlayer = buildingPos.clone().subtract(playerPos).add(-7, 5, -7);
+
+    ServerCameraSettings settings = new ServerCameraSettings();
+    settings.positionLerpSpeed = 0.2f;
+    settings.rotationLerpSpeed = 0.2f;
+    settings.distance = 25.0f;
+    settings.displayCursor = true;
+    settings.isFirstPerson = false;
+    settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
+    settings.eyeOffset = true;
+    settings.positionOffset =
+        new Position(relativeToPlayer.x, relativeToPlayer.y, relativeToPlayer.z);
+    settings.positionDistanceOffsetType = PositionDistanceOffsetType.DistanceOffset;
+    settings.rotationType = RotationType.Custom;
+    settings.rotation = new Direction(-2.7f, -0.75f, 0.0f);
+    settings.mouseInputType = MouseInputType.LookAtTargetEntity;
+    settings.planeNormal = new com.hypixel.hytale.protocol.Vector3f(0.0f, 1.0f, 0.0f);
+    settings.sendMouseMotion = true;
+
+    playerRef
+        .getPacketHandler()
+        .writeNoCache(new SetServerCamera(ClientCameraView.Custom, true, settings));
+  }
+
+  public static void setDefaultCameraPosition(PlayerRef playerRef) {
     ServerCameraSettings settings = new ServerCameraSettings();
     settings.positionLerpSpeed = 0.2f;
     settings.rotationLerpSpeed = 0.2f;

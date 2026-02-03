@@ -22,6 +22,7 @@ import org.jspecify.annotations.NullMarked;
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
   public static int BUILDING_PLACE_GAP = 3;
   public static int SPAWN_DISALLOW_AREA = 10;
+  public static int MAX_DISTANCE_FROM_RADIO_TOWER = 50;
 
   public MouseClickSystem() {
     super(MouseClickEvent.class);
@@ -53,6 +54,9 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             return;
           }
 
+          // no middle clicking
+          if (event.type != MouseButtonType.Left) return;
+
           var entityStore = world.getEntityStore().getStore();
           var placement = entityStore.getComponent(ref, Plugin.getPlaceType());
           var playerRef = entityStore.getComponent(ref, PlayerRef.getComponentType());
@@ -61,6 +65,14 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
           Vector3i clickLocation = event.pos;
 
           if (placement != null) {
+            if (clickLocation.distanceSquaredTo(Plugin.RADIO_LOC)
+                > MAX_DISTANCE_FROM_RADIO_TOWER * MAX_DISTANCE_FROM_RADIO_TOWER) {
+              if (playerRef != null)
+                playerRef.sendMessage(
+                    Message.raw("Can't place buildings too far from the radio tower!"));
+              return;
+            }
+
             JamSave.BuildingType target = placement.building;
             var prefabBuffer =
                 PrefabBufferUtil.getCached(
