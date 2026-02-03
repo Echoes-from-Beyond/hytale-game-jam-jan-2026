@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -69,8 +70,27 @@ public class BuildingInteractUI
     var world = store.getExternalData().getWorld();
     world.execute(
         () -> {
-          if (building.hasColonist()) building.removeColonist();
-          else building.assignColonist();
+          var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
+          if (building.hasColonist()) {
+            building.removeColonist();
+            jam.colonists++;
+          } else {
+            if (jam.colonists <= 0) {
+              if (ref.isValid()) {
+                var pr = store.getComponent(ref, PlayerRef.getComponentType());
+                if (pr != null)
+                  pr.sendMessage(
+                      Message.raw(
+                          "You have no more colonists! Build housing to gain more, or reallocate"
+                              + " some from buildings they're already assigned to."));
+              }
+
+              return;
+            }
+
+            building.assignColonist();
+            jam.colonists--;
+          }
 
           UICommandBuilder builder = new UICommandBuilder();
           setFromBuilding(building, builder);
