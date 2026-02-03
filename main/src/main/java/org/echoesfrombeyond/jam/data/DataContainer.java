@@ -212,19 +212,16 @@ public class DataContainer {
         stay.
         """),
     new DataContainer(
-            JamSave.BuildingType.SpawnIndicator,
-            Arrays.asList(
-                    new Upgrade()
-            ),
-            UpgradeRequirement.resourceTypes[0],
+        JamSave.BuildingType.SpawnIndicator,
+        Arrays.asList(new Upgrade()),
+        UpgradeRequirement.resourceTypes[0],
         """
         Some of the automatons seem to
         spend a lot of time around these.
         Perhaps this is some kind of
         a wireless charging technology,
         or a controller.
-        """
-    )
+        """)
   };
 
   public static ArrayList<DataContainer> placeableBuildings() {

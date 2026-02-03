@@ -24,8 +24,7 @@ public class BuildingInteractUI
 
   private final JamSave.Building building;
   private final DataContainer[] buildingData = DataContainer.allUpgrades;
-  @Nullable
-  private DataContainer matchingData = null;
+  @Nullable private DataContainer matchingData = null;
 
   public BuildingInteractUI(PlayerRef playerRef, JamSave.Building building) {
     super(
@@ -34,12 +33,20 @@ public class BuildingInteractUI
         BuildingInteractUIData.CODEC);
 
     this.building = building;
-    for(DataContainer d : buildingData) {
-      if(d.buildingType == building.type) {
+    for (DataContainer d : buildingData) {
+      if (d.buildingType == building.type) {
         matchingData = d;
         break;
       }
     }
+  }
+
+  @Override
+  public void onDismiss(Ref<EntityStore> ref, Store<EntityStore> store) {
+    var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
+    if (playerRef == null) return;
+
+    Plugin.setDefaultCameraPosition(playerRef);
   }
 
   @Override
@@ -53,36 +60,36 @@ public class BuildingInteractUI
     String selector = "#TestGroup";
     setFromBuilding(building, commandBuilder);
 
-    if(matchingData!= null) {
+    if (matchingData != null) {
       commandBuilder.set("#BuildingLore.Text", matchingData.description);
 
-      if(matchingData.buildingType == JamSave.BuildingType.RadioTower) {
+      if (matchingData.buildingType == JamSave.BuildingType.RadioTower) {
         var radioUpgrade = matchingData.upgrades.get(1).requirements.getFirst();
-        commandBuilder.set("#UpgradeButton #Ingr", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
+        commandBuilder.set(
+            "#UpgradeButton #Ingr", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
       } else {
         commandBuilder.set("#UpgradeButton", false);
       }
     }
 
     eventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            selector + " #UpgradeButton",
-            EventData.of(BuildingInteractUIData.CLICKED_COLONIST, "false")
-                    .append(BuildingInteractUIData.CLICKED_UPGRADE, "true"),
-            false);
+        CustomUIEventBindingType.Activating,
+        selector + " #UpgradeButton",
+        EventData.of(BuildingInteractUIData.CLICKED_COLONIST, "false")
+            .append(BuildingInteractUIData.CLICKED_UPGRADE, "true"),
+        false);
 
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
         selector + " #AssignColonist",
         EventData.of(BuildingInteractUIData.CLICKED_COLONIST, "true")
-                .append(BuildingInteractUIData.CLICKED_UPGRADE, "false"),
+            .append(BuildingInteractUIData.CLICKED_UPGRADE, "false"),
         false);
   }
 
   private void setFromBuilding(JamSave.Building building, UICommandBuilder commandBuilder) {
     String selector = "#TestGroup";
     commandBuilder.set(selector + " #TestTitle.Text", building.type.prettyName);
-
 
     if (!building.type.needsColonist) {
       commandBuilder.set("#AssignColonist.Visible", false);
@@ -103,12 +110,12 @@ public class BuildingInteractUI
         () -> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
-          if(Boolean.parseBoolean(data.clickedUpgrade)) {
-            if(matchingData == null) {
+          if (Boolean.parseBoolean(data.clickedUpgrade)) {
+            if (matchingData == null) {
               return;
             }
 
-            if(jam.scrap >= matchingData.upgrades.getFirst().requirements.get(1).amount) {
+            if (jam.scrap >= matchingData.upgrades.getFirst().requirements.get(1).amount) {
               // your game win logic here
             }
             return;
@@ -156,12 +163,11 @@ public class BuildingInteractUI
                 (data, s) -> data.clickedUpgrade = s,
                 (data) -> data.clickedUpgrade)
             .add()
-                .append(
-                        new KeyedCodec<>(CLICKED_COLONIST, BuilderCodec.STRING),
-                        (data, s) -> data.clickedColonist =s,
-                        (data) -> data.clickedColonist
-                )
-                .add()
+            .append(
+                new KeyedCodec<>(CLICKED_COLONIST, BuilderCodec.STRING),
+                (data, s) -> data.clickedColonist = s,
+                (data) -> data.clickedColonist)
+            .add()
             .build();
 
     private String clickedUpgrade = "false";
@@ -170,6 +176,7 @@ public class BuildingInteractUI
     public String getClickedUpgrade() {
       return clickedUpgrade;
     }
+
     public String getClickedColonist() {
       return clickedColonist;
     }
