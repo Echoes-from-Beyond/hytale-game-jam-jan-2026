@@ -199,8 +199,8 @@ fun Project.withHytaleDependency() {
 
     repositories.exclusiveContent { exclusive ->
         exclusive.forRepositories(repositories.maven { maven ->
-            maven.name = "hytale-pre-release"
-            maven.url = URI.create("https://maven.hytale.com/pre-release")
+            maven.name = "hytale-release"
+            maven.url = URI.create("https://maven.hytale.com/release")
         })
         exclusive.filter { filter -> filter.includeGroup("com.hypixel.hytale") }
     }
