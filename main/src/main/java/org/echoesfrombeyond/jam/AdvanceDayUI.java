@@ -77,13 +77,13 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
 
               switch (p.resourceGenerated) {
                 case ("scrap"):
-                  save.scrap += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  save.scrap += p.upgrades.getFirst().resourcesGeneratedPerColonist * b.resourceMul();
                   break;
                 case ("water"):
-                  save.water += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  save.water += p.upgrades.getFirst().resourcesGeneratedPerColonist * b.resourceMul();
                   break;
                 case ("food"):
-                  save.food += p.upgrades.getFirst().resourcesGeneratedPerColonist;
+                  save.food += p.upgrades.getFirst().resourcesGeneratedPerColonist * b.resourceMul();
                   break;
                 default:
                   continue outerLoop;
