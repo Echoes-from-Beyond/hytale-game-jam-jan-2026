@@ -50,10 +50,16 @@ public class ChooseBuildingUI
 
       // why can't you generate a list in a single UI file lmao
       commandBuilder.append("#BuildingGroup", "Choose_Building_Fragment.ui");
-      commandBuilder.set(select + " #BuildingName.Text", build.name());
+      commandBuilder.set(select + " #BuildingName.Text", build.prettyName);
 
       List<UpgradeRequirement> ur = targetBuild.upgrades.getFirst().requirements;
       Pair<String, String> compactedUr = compactRequirements(ur);
+
+      for(int j = 0; j < ur.size(); j++) {
+        String selectInner = select + " #Requirement[" + j + "]";
+        commandBuilder.append(select + " #Requirement", "Choose_Building_Requirement.ui");
+        commandBuilder.set(selectInner + " #RequirementLabel.Text", ur.get(j).resourceType + ": " + ur.get(j).amount);
+      }
 
       eventBuilder.addEventBinding(
           CustomUIEventBindingType.Activating,

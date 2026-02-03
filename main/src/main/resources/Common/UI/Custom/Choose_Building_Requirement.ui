@@ -1,0 +1,14 @@
+$C = "Common.ui";
+
+Group {
+  Anchor: (Full: 0);
+  Label #RequirementLabel {
+    Style: (
+                  FontSize: 14,
+                  TextColor: #ffffff,
+                  HorizontalAlignment: Start,
+                  VerticalAlignment: Center,
+                  RenderItalics: true,
+                );
+  }
+}

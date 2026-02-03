@@ -114,8 +114,8 @@ public class DataContainer {
             new Upgrade(
                 1,
                 Arrays.asList(
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 10)),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 5)),
                 0,
                 0),
             new Upgrade(

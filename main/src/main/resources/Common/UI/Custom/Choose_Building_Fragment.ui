@@ -1,34 +1,30 @@
 $C = "Common.ui";
 
 Group {
+      Anchor: (Width: 650, Height: 130);
+      Padding: (Horizontal: 20, Vertical: 20);
       ItemSlotButton #BuildingSelector {
-          Anchor: (Full: 0);
-          LayoutMode: Full;
-          Padding: 2;
-          Style: (
-            Default: (
-              Background: #252f3a,
-            ),
-            Hovered: (
-              Background: #c9a050,
-            ),
-            Pressed: (
-              Background: #a08040,
-            ),
-            Disabled: (
-              Background: #1a1e24,
-            ),
-              Sounds: $C.@ButtonSounds,
-            );
+                          Anchor: (Full: 0);
+                                    LayoutMode: Top;
+                                    Padding: 2;
+                                    Style: $C.@DefaultButtonStyle;
           Label #BuildingName {
-            Anchor: (Full: 0);
+            Anchor: (Width: 650, Height: 40);
             Style: (
-              FontSize: 12,
+              FontSize: 23,
               TextColor: #ffffff,
               HorizontalAlignment: Center,
-              VerticalAlignment: Center,
+              VerticalAlignment: Start,
               RenderBold: true,
             );
+          }
+
+          Group #RequirementsSection {
+            Anchor: (Width: 650, Height: 70);
+            Padding: (Horizontal: 30);
+            Group #Requirement {
+              LayoutMode: Top;
+            }
           }
         }
 }
