@@ -96,6 +96,9 @@ public class BuildingInteractUI
           setFromBuilding(building, builder);
 
           this.sendUpdate(builder);
+          if (ref.isValid()) {
+            world.getEntityStore().getStore().invoke(ref, new HudUpdateSystem.Event());
+          }
         });
   }
 
