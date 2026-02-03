@@ -6,7 +6,7 @@ $C.@PageOverlay {}
 // I STG IT'S INTELLIJ THAT KEEPS MESSING WITH THE INDENTATION
 // also this UI system is making me relate to those "tfw you forgor a semicolon xd" memes...
 $C.@DecoratedContainer {
-  Anchor: (Width: 740, Height: 480);
+  Anchor: (Width: 740, Height: 480, Right: 50);
   Group #TestGroup {
     LayoutMode: Top;
     Group {
