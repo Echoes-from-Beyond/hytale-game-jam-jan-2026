@@ -16,12 +16,12 @@ import org.jspecify.annotations.NullMarked;
 public class EnemyDeathSystem extends DeathSystems.OnDeathSystem {
   private static final List<String> DEATH_MESSAGES =
       List.of(
-          "AAAAAAA!",
-          "ouch...",
-          "i just wanted to destroy your buildings...",
-          "MY FRIENDS WILL AVENGE ME",
-          "it's so kweeover",
-          "i just... wanted to taste poutine... one last time...");
+          "Beep boop.",
+          "01010011 01001101 01001000",
+          "Whirrrr. Buzz.",
+          "Target *tk* identified.",
+          "Buzz. Sustained critical damage.",
+          "System error detected. Beep.");
 
   private static final Random RNG = new Random();
 
@@ -45,9 +45,11 @@ public class EnemyDeathSystem extends DeathSystems.OnDeathSystem {
           if (stage == null || !stage.isBattle) return;
 
           var cause = deathComponent.getDeathCause();
-          if (cause != null && !cause.getId().equals("OutOfWorld"))
-            world.sendMessage(Message.raw(DEATH_MESSAGES.get(RNG.nextInt(DEATH_MESSAGES.size()))));
-          stage.killed++;
+          if (cause != null && !cause.getId().equals("OutOfWorld")) stage.killed++;
+          if (RNG.nextInt(6) != 5) {
+            return;
+          }
+          world.sendMessage(Message.raw(DEATH_MESSAGES.get(RNG.nextInt(DEATH_MESSAGES.size()))));
         });
   }
 
