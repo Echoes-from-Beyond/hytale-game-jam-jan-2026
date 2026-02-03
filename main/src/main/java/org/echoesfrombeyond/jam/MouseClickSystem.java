@@ -20,7 +20,7 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
-  public static int BUILDING_PLACE_GAP = 3;
+  public static int BUILDING_PLACE_GAP = 5;
   public static int SPAWN_DISALLOW_AREA = 10;
   public static int MAX_DISTANCE_FROM_RADIO_TOWER = 50;
 
@@ -164,30 +164,38 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                     if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough scrap!"));
                     return;
                   }
-
-                  save.scrap -= value;
                   break;
                 case "food":
                   if (save.food < value) {
                     if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough food!"));
                     return;
                   }
-
-                  save.food -= value;
                   break;
                 case "water":
                   if (save.water < value) {
                     if (playerRef != null) playerRef.sendMessage(Message.raw("Not enough water!"));
                     return;
                   }
-
-                  save.water -= value;
                   break;
                 default:
                   // just do nothing for badly configured previews
                   return;
               }
             }
+
+            for (int j = 0; j < splitTypes.length; j++) {
+              int value = Integer.parseInt(splitAmounts[j]);
+              switch (splitTypes[j]) {
+                case "scrap" -> save.scrap -= value;
+                case "food" -> save.food -= value;
+                case "water" -> save.water -= value;
+                default -> {
+                  return;
+                }
+              }
+            }
+
+            entityStore.removeComponent(ref, Plugin.getPlaceType());
 
             PrefabUtil.paste(
                 prefabBuffer, world, clickLocation, Rotation.None, true, new FastRandom(), buffer);
@@ -196,16 +204,18 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
                 Arrays.stream(JamSave.BuildingType.values())
                     .filter(bt -> bt.name().equalsIgnoreCase(target.name()))
                     .findFirst();
-            if (res.isEmpty()) return;
+            if (res.isEmpty()) {
+              entityStore.invoke(ref, new HudUpdateSystem.Event());
+              return;
+            }
 
             JamSave.Building building = new JamSave.Building();
             building.type = res.get();
             building.min = minBound;
             building.max = maxBound;
 
+            if (building.type == JamSave.BuildingType.Housing) save.colonists++;
             save.buildings.add(building);
-
-            entityStore.removeComponent(ref, Plugin.getPlaceType());
             entityStore.invoke(ref, new HudUpdateSystem.Event());
             return;
           }

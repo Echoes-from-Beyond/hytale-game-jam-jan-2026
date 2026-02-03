@@ -37,7 +37,7 @@ public class DataContainer {
             new Upgrade(),
             new Upgrade(
                 2,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 100)),
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 50)),
                 0,
                 0)),
         UpgradeRequirement.resourceTypes[0],
@@ -75,7 +75,7 @@ public class DataContainer {
                 Arrays.asList(
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 3)),
-                3,
+                4,
                 1),
             new Upgrade(
                 2,
@@ -101,8 +101,8 @@ public class DataContainer {
         Arrays.asList(
             new Upgrade(
                 1,
-                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6)),
-                3,
+                Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 5)),
+                4,
                 1),
             new Upgrade(
                 2,
@@ -129,7 +129,7 @@ public class DataContainer {
                 Arrays.asList(
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 5),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6)),
-                3,
+                5,
                 1),
             new Upgrade(
                 2,
@@ -190,7 +190,7 @@ public class DataContainer {
                 1,
                 Arrays.asList(
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
-                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 5)),
+                    new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 4)),
                 0,
                 0),
             new Upgrade(

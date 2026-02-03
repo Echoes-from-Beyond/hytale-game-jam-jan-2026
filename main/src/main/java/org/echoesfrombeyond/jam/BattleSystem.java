@@ -18,8 +18,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 
@@ -27,17 +25,9 @@ import org.jspecify.annotations.NullMarked;
 public class BattleSystem extends EntityTickingSystem<EntityStore> {
   public record BattleData(int spawns, float spawnInterval) {}
 
-  public static final Int2ObjectMap<BattleData> DAYS;
-
-  public static final int FINAL_DAY = 5;
-
-  static {
-    DAYS = new Int2ObjectOpenHashMap<>();
-    DAYS.put(1, new BattleData(5, 5));
-    DAYS.put(2, new BattleData(10, 5));
-    DAYS.put(3, new BattleData(12, 5));
-    DAYS.put(4, new BattleData(15, 5));
-    DAYS.put(FINAL_DAY, new BattleData(20, 5));
+  private static BattleData dataForDay(int day) {
+    return new BattleData(
+        5 + (int) (day * 1.5), (float) Math.max(0.85F, 5F - ((float) day * 0.75)));
   }
 
   @Override
@@ -62,7 +52,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
         () -> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
-          if (jam.towerHealth <= 0 && jam.day <= FINAL_DAY) {
+          if (jam.towerHealth <= 0) {
             Plugin.clearAllEnemies(world);
             System.out.println("YOU LOST...");
 
@@ -82,20 +72,18 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             jam.assignInitialValues();
             stage.reset();
 
-            if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
+            if (ref.isValid()) {
+              store.invoke(ref, new HudUpdateSystem.Event());
+              var pr = store.getComponent(ref, PlayerRef.getComponentType());
+              if (pr != null) OpenLoseUI.openLosePopup(ref, pr);
+            }
             return;
           }
 
-          if (!DAYS.containsKey(jam.day)) return;
-          var currentDayData = DAYS.get(jam.day);
+          var currentDayData = dataForDay(jam.day);
 
           if (stage.killed >= currentDayData.spawns) {
-            if (++jam.day > FINAL_DAY) {
-              System.out.println("YOU WIN");
-            } else {
-              System.out.println("YOU SURVIVED THE NIGHT...");
-            }
-
+            ++jam.day;
             stage.reset();
             if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
             return;
@@ -120,7 +108,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
     var ma = ModelAsset.getAssetMap().getAsset("Spark_Living");
     assert ma != null;
 
-    var model = Model.createScaledModel(ma, 5.0F);
+    var model = Model.createScaledModel(ma, 4.0F);
     assert model.getBoundingBox() != null;
 
     var transform = new TransformComponent();
@@ -163,9 +151,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
     var target = Plugin.RADIO_LOC;
 
     var tp = new TransientPath();
-    // tp.addWaypoint(transform.getPosition().clone(), transform.getRotation().clone());
     tp.addWaypoint(target.clone().toVector3d(), new Vector3f(0, 0, 0));
-
     newNpcComp.getPathManager().setTransientPath(tp);
   }
 

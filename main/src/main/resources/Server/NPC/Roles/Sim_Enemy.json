@@ -3,7 +3,7 @@
   "MotionControllerList": [
     {
       "Type": "Walk",
-      "MaxWalkSpeed": 3,
+      "MaxWalkSpeed": 5,
       "Gravity": 10,
       "MaxFallSpeed": 8,
       "Acceleration": 10,
@@ -42,8 +42,12 @@
           },
           "BodyMotion": {
             "Type": "Seek",
-            "StopDistance": 1,
-            "SlowdownDistance": 1
+            "StopDistance": 4,
+            "SlowdownDistance": 1,
+            "SwitchToSteeringDistance": 1,
+            "MaxPathLength": 10000,
+            "MaxOpenNodes": 10000,
+            "MaxTotalNodes": 10000
           }
         }
       ]

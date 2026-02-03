@@ -23,7 +23,7 @@ Group {
     }
 
     Label {
-      Text: "Colonists";
+      Text: "Idle Colonists";
       Style: (...@LabelStyle);
     }
 

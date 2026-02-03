@@ -18,6 +18,7 @@ import org.jspecify.annotations.NullMarked;
 public class EnemyDamageTowerSystem extends EntityTickingSystem<EntityStore> {
   // in case of stuck entities
   public static final float MAX_LIFETIME = 60;
+  public static final int DAMAGE_TOWER_RANGE = 5;
 
   @Override
   public void tick(
@@ -56,9 +57,9 @@ public class EnemyDamageTowerSystem extends EntityTickingSystem<EntityStore> {
             return;
           }
 
-          if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < 16) {
+          if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < DAMAGE_TOWER_RANGE * DAMAGE_TOWER_RANGE) {
             var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
-            if (jam.towerHealth > 0 && jam.day <= BattleSystem.FINAL_DAY) {
+            if (jam.towerHealth > 0) {
               jam.towerHealth--;
               world.sendMessage(Message.raw("Your tower is taking damage!"));
               if (player.isValid()) store.invoke(player, new HudUpdateSystem.Event());
@@ -66,7 +67,8 @@ public class EnemyDamageTowerSystem extends EntityTickingSystem<EntityStore> {
           }
         });
 
-    if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < 16 || enemy.timeSpentAlive > MAX_LIFETIME) {
+    if (pos.distanceSquaredTo(Plugin.RADIO_LOC) < DAMAGE_TOWER_RANGE * DAMAGE_TOWER_RANGE
+        || enemy.timeSpentAlive > MAX_LIFETIME) {
       DamageSystems.executeDamage(
           i,
           archetypeChunk,
