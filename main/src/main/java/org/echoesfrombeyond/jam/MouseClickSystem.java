@@ -21,6 +21,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickEvent> {
   public static int BUILDING_PLACE_GAP = 3;
+  public static int SPAWN_DISALLOW_AREA = 10;
 
   public MouseClickSystem() {
     super(MouseClickEvent.class);
@@ -108,6 +109,29 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
               }
             }
 
+            var spawnCheck =
+                new Bounds3i(
+                    Plugin.ENEMY_SPAWN_LOC
+                        .clone()
+                        .subtract(SPAWN_DISALLOW_AREA, SPAWN_DISALLOW_AREA, SPAWN_DISALLOW_AREA),
+                    Plugin.ENEMY_SPAWN_LOC
+                        .clone()
+                        .add(SPAWN_DISALLOW_AREA, SPAWN_DISALLOW_AREA, SPAWN_DISALLOW_AREA));
+
+            var candidate = new Bounds3i(minBound.clone(), maxBound.clone());
+
+            spawnCheck.min.setY(0);
+            spawnCheck.max.setY(1);
+
+            candidate.min.setY(0);
+            candidate.max.setY(1);
+
+            if (spawnCheck.intersects(candidate)) {
+              if (playerRef != null)
+                playerRef.sendMessage(Message.raw("Too close to the enemy spawnpoint!"));
+              return;
+            }
+
             if (conflict) {
               if (playerRef != null)
                 playerRef.sendMessage(Message.raw("Too close to another building!"));
@@ -120,7 +144,6 @@ public class MouseClickSystem extends EntityEventSystem<EntityStore, MouseClickE
             String[] splitTypes = placement.resourceTypes.split(",");
             String[] splitAmounts = placement.amountsSpent.split(",");
 
-            // TODO: feedback to player in case of lacking resources
             for (int j = 0; j < splitTypes.length; j++) {
               int value = Integer.parseInt(splitAmounts[j]);
               switch (splitTypes[j]) {
