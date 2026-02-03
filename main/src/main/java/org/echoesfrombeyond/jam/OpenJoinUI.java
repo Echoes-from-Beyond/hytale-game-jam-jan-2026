@@ -7,15 +7,13 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class OpenJoinUI {
-  public static void openJoinPopup(CommandBuffer<EntityStore> buffer, Ref<EntityStore> ref) {
-    if (buffer == null) return;
+  public static void openJoinPopup( Ref<EntityStore> ref, PlayerRef playerRef) {
 
-    var player = buffer.getComponent(ref, Player.getComponentType());
-    var playerRef = buffer.getComponent(ref, PlayerRef.getComponentType());
+    var player = ref.getStore().getComponent(ref, Player.getComponentType());
 
     if (player == null
         || playerRef == null
-        || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
+        || ref.getStore().getComponent(ref, Plugin.getPlaceType()) != null) return;
 
     player.getPageManager().openCustomPage(ref, ref.getStore(), new JoinUI(playerRef));
   }

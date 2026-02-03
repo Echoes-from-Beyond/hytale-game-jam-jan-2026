@@ -260,6 +260,7 @@ public class Plugin extends JavaPlugin {
 
       ref.getStore().invoke(ref, new HudUpdateSystem.Event());
       ref.getStore().addComponent(ref, getStageType(), new GameStageComponent());
+      OpenJoinUI.openJoinPopup(ref, playerRef);
     }
 
     ServerCameraSettings settings = new ServerCameraSettings();
