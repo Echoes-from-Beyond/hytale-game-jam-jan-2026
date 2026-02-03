@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -40,7 +41,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
     var stage = archetypeChunk.getComponent(i, Plugin.getStageType());
     assert stage != null;
 
-    if (!stage.isBattle) return;
+    if (!stage.isBattle && !stage.won) return;
     stage.battleTime += v;
 
     var battleTime = stage.battleTime;
@@ -52,31 +53,13 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
         () -> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
+          if (stage.won) {
+            clearEverything(jam, world, stage, ref, store, true);
+            return;
+          }
+
           if (jam.towerHealth <= 0) {
-            Plugin.clearAllEnemies(world);
-            System.out.println("YOU LOST...");
-
-            for (var building : jam.buildings) {
-              if (building.type == JamSave.BuildingType.CommandTent
-                  || building.type == JamSave.BuildingType.RadioTower) continue;
-
-              for (int x = building.min.x; x <= building.max.x; x++) {
-                for (int y = building.min.y; y <= building.max.y; y++) {
-                  for (int z = building.min.z; z <= building.max.z; z++) {
-                    world.setBlock(x, y, z, "Empty");
-                  }
-                }
-              }
-            }
-
-            jam.assignInitialValues();
-            stage.reset();
-
-            if (ref.isValid()) {
-              store.invoke(ref, new HudUpdateSystem.Event());
-              var pr = store.getComponent(ref, PlayerRef.getComponentType());
-              if (pr != null) OpenLoseUI.openLosePopup(ref, pr);
-            }
+            clearEverything(jam, world, stage, ref, store, false);
             return;
           }
 
@@ -100,6 +83,41 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             System.out.println("All enemies spawned");
           }
         });
+  }
+
+  private void clearEverything(
+      JamSave jam,
+      World world,
+      GameStageComponent stage,
+      Ref<EntityStore> ref,
+      Store<EntityStore> store,
+      boolean win) {
+    Plugin.clearAllEnemies(world);
+
+    for (var building : jam.buildings) {
+      if (building.type == JamSave.BuildingType.CommandTent
+          || building.type == JamSave.BuildingType.RadioTower) continue;
+
+      for (int x = building.min.x; x <= building.max.x; x++) {
+        for (int y = building.min.y; y <= building.max.y; y++) {
+          for (int z = building.min.z; z <= building.max.z; z++) {
+            world.setBlock(x, y, z, "Empty");
+          }
+        }
+      }
+    }
+
+    jam.assignInitialValues();
+    stage.reset();
+
+    if (!ref.isValid()) return;
+    store.invoke(ref, new HudUpdateSystem.Event());
+
+    var pr = store.getComponent(ref, PlayerRef.getComponentType());
+    if (pr == null) return;
+
+    if (win) OpenWinUI.openWinPopup(ref, pr);
+    else OpenLoseUI.openLosePopup(ref, pr);
   }
 
   private void spawnEnemy(Ref<EntityStore> player, Store<EntityStore> store) {

@@ -9,7 +9,7 @@ $C.@DecoratedContainer {
       LayoutMode: Top;
       Group #LabelDiv {
         Anchor: (Width: 450, Height: 150);
-        Label #LoseTitle {
+        Label #WinTitle {
                 Anchor: (Full: 0);
                 Style: (
                 // taken from TitleStyle in Common.ui, with a patched FontSize because it's really small for a title

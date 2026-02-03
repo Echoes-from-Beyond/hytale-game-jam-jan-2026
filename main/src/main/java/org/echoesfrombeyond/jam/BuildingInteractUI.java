@@ -104,7 +104,7 @@ public class BuildingInteractUI
   @Override
   public void handleDataEvent(
       Ref<EntityStore> ref, Store<EntityStore> store, BuildingInteractUIData data) {
-    if (!building.type.needsColonist) return;
+    if (!building.type.needsColonist && building.type != JamSave.BuildingType.RadioTower) return;
 
     var world = store.getExternalData().getWorld();
     world.execute(
@@ -112,15 +112,23 @@ public class BuildingInteractUI
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
 
           if (Boolean.parseBoolean(data.clickedUpgrade)) {
-            if (matchingData == null) {
+            if (matchingData == null
+                || matchingData.buildingType != JamSave.BuildingType.RadioTower) {
               return;
             }
 
-            if (jam.scrap >= matchingData.upgrades.getFirst().requirements.get(1).amount) {
-              // your game win logic here
+            if (jam.scrap >= matchingData.upgrades.get(1).requirements.getFirst().amount) {
+              if (!ref.isValid()) return;
+
+              var gs = store.getComponent(ref, Plugin.getStageType());
+              if (gs == null) return;
+
+              gs.won = true;
             }
             return;
           }
+
+          if (building.type == JamSave.BuildingType.RadioTower) return;
 
           if (building.hasColonist()) {
             building.removeColonist();

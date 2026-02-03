@@ -9,6 +9,7 @@ public class GameStageComponent implements Component<EntityStore> {
   /** whether we're in the combat phase */
   public boolean isBattle;
 
+  public boolean won;
   public float battleTime;
   public int spawned;
   public int killed;
@@ -17,6 +18,7 @@ public class GameStageComponent implements Component<EntityStore> {
 
   public GameStageComponent(GameStageComponent other) {
     this.isBattle = other.isBattle;
+    this.won = other.won;
     this.battleTime = other.battleTime;
     this.spawned = other.spawned;
     this.killed = other.killed;
@@ -24,6 +26,7 @@ public class GameStageComponent implements Component<EntityStore> {
 
   public void reset() {
     isBattle = false;
+    won = false;
     battleTime = 0;
     spawned = 0;
     killed = 0;

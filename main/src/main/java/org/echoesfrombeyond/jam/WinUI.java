@@ -13,9 +13,9 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class LoseUI extends InteractiveCustomUIPage<LoseUI.LoseData> {
-  public LoseUI(PlayerRef playerRef) {
-    super(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, LoseData.CODEC);
+public class WinUI extends InteractiveCustomUIPage<WinUI.WinData> {
+  public WinUI(PlayerRef playerRef) {
+    super(playerRef, CustomPageLifetime.CantClose, WinData.CODEC);
   }
 
   @Override
@@ -24,21 +24,21 @@ public class LoseUI extends InteractiveCustomUIPage<LoseUI.LoseData> {
       UICommandBuilder commandBuilder,
       UIEventBuilder eventBuilder,
       Store<EntityStore> store) {
-    commandBuilder.append("Lose.ui");
+    commandBuilder.append("Win.ui");
     String groupSelect = "#Container";
 
-    commandBuilder.set(groupSelect + " #LoseTitle.Text", "The radio tower was destroyed!");
+    commandBuilder.set(groupSelect + " #WinTitle.Text", "You Win!");
   }
 
-  public void handleDataEvent(Ref<EntityStore> ref, Store<EntityStore> store, LoseData data) {
+  public void handleDataEvent(Ref<EntityStore> ref, Store<EntityStore> store, WinData data) {
     // do something here
   }
 
-  public static class LoseData {
+  public static class WinData {
     static final String CLICKED_FIELD = "Clicked";
 
-    public static final BuilderCodec<LoseData> CODEC =
-        BuilderCodec.builder(LoseData.class, LoseData::new)
+    public static final BuilderCodec<WinData> CODEC =
+        BuilderCodec.builder(WinData.class, WinData::new)
             .append(
                 new KeyedCodec<>(CLICKED_FIELD, BuilderCodec.STRING),
                 (data, s) -> data.clicked = s,
