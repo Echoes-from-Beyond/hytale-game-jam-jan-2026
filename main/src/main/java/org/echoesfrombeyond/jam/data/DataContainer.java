@@ -75,7 +75,7 @@ public class DataContainer {
                 Arrays.asList(
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[0], 3),
                     new UpgradeRequirement(UpgradeRequirement.resourceTypes[1], 3)),
-                1,
+                3,
                 1),
             new Upgrade(
                 2,
@@ -102,7 +102,7 @@ public class DataContainer {
             new Upgrade(
                 1,
                 Arrays.asList(new UpgradeRequirement(UpgradeRequirement.resourceTypes[2], 6)),
-                2,
+                3,
                 1),
             new Upgrade(
                 2,
