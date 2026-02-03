@@ -13,7 +13,9 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import org.echoesfrombeyond.jam.data.DataContainer;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public class BuildingInteractUI
@@ -21,6 +23,9 @@ public class BuildingInteractUI
   // I made this interactive in case we have time to do building upgrades
 
   private final JamSave.Building building;
+  private final DataContainer[] buildingData = DataContainer.allUpgrades;
+  @Nullable
+  private DataContainer matchingData = null;
 
   public BuildingInteractUI(PlayerRef playerRef, JamSave.Building building) {
     super(
@@ -29,6 +34,12 @@ public class BuildingInteractUI
         BuildingInteractUIData.CODEC);
 
     this.building = building;
+    for(DataContainer d : buildingData) {
+      if(d.buildingType == building.type) {
+        matchingData = d;
+        break;
+      }
+    }
   }
 
   @Override
@@ -42,10 +53,29 @@ public class BuildingInteractUI
     String selector = "#TestGroup";
     setFromBuilding(building, commandBuilder);
 
+    if(matchingData!= null) {
+      commandBuilder.set("#BuildingLore.Text", matchingData.description);
+
+      if(matchingData.buildingType == JamSave.BuildingType.RadioTower) {
+        var radioUpgrade = matchingData.upgrades.get(1).requirements.getFirst();
+        commandBuilder.set("#UpgradeButton #Ingr", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
+      } else {
+        commandBuilder.set("#UpgradeButton", false);
+      }
+    }
+
+    eventBuilder.addEventBinding(
+            CustomUIEventBindingType.Activating,
+            selector + " #UpgradeButton",
+            EventData.of(BuildingInteractUIData.CLICKED_COLONIST, "false")
+                    .append(BuildingInteractUIData.CLICKED_UPGRADE, "true"),
+            false);
+
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
         selector + " #AssignColonist",
-        EventData.of(BuildingInteractUIData.BUILDING_NAME, "ignored"),
+        EventData.of(BuildingInteractUIData.CLICKED_COLONIST, "true")
+                .append(BuildingInteractUIData.CLICKED_UPGRADE, "false"),
         false);
   }
 
@@ -53,12 +83,13 @@ public class BuildingInteractUI
     String selector = "#TestGroup";
     commandBuilder.set(selector + " #TestTitle.Text", building.type.prettyName);
 
+
     if (!building.type.needsColonist) {
-      commandBuilder.set(selector + " #AssignColonist.Visible", false);
+      commandBuilder.set("#AssignColonist.Visible", false);
     } else if (building.hasColonist()) {
-      commandBuilder.set(selector + " #AssignColonist #Lab.Text", "Remove Colonist");
+      commandBuilder.set("#AssignColonist #Lab.Text", "Remove Colonist");
     } else {
-      commandBuilder.set(selector + " #AssignColonist #Lab.Text", "Assign Colonist");
+      commandBuilder.set("#AssignColonist #Lab.Text", "Assign Colonist");
     }
   }
 
@@ -71,6 +102,18 @@ public class BuildingInteractUI
     world.execute(
         () -> {
           var jam = world.getChunkStore().getStore().getResource(Plugin.getJamType());
+
+          if(Boolean.parseBoolean(data.clickedUpgrade)) {
+            if(matchingData == null) {
+              return;
+            }
+
+            if(jam.scrap >= matchingData.upgrades.getFirst().requirements.get(1).amount) {
+              // your game win logic here
+            }
+            return;
+          }
+
           if (building.hasColonist()) {
             building.removeColonist();
             jam.colonists++;
@@ -103,22 +146,32 @@ public class BuildingInteractUI
   }
 
   public static class BuildingInteractUIData {
-    // placeholder
-    static final String BUILDING_NAME = "BuildingName";
+    static final String CLICKED_UPGRADE = "ClickedUpgrade";
+    static final String CLICKED_COLONIST = "ClickedColonist";
 
     public static final BuilderCodec<BuildingInteractUIData> CODEC =
         BuilderCodec.builder(BuildingInteractUIData.class, BuildingInteractUIData::new)
             .append(
-                new KeyedCodec<>(BUILDING_NAME, BuilderCodec.STRING),
-                (data, s) -> data.buildingName = s,
-                (data) -> data.buildingName)
+                new KeyedCodec<>(CLICKED_UPGRADE, BuilderCodec.STRING),
+                (data, s) -> data.clickedUpgrade = s,
+                (data) -> data.clickedUpgrade)
             .add()
+                .append(
+                        new KeyedCodec<>(CLICKED_COLONIST, BuilderCodec.STRING),
+                        (data, s) -> data.clickedColonist =s,
+                        (data) -> data.clickedColonist
+                )
+                .add()
             .build();
 
-    private String buildingName = "";
+    private String clickedUpgrade = "false";
+    private String clickedColonist = "false";
 
-    public String getBuildingName() {
-      return buildingName;
+    public String getClickedUpgrade() {
+      return clickedUpgrade;
+    }
+    public String getClickedColonist() {
+      return clickedColonist;
     }
   }
 }

@@ -3,42 +3,117 @@ $C = "Common.ui";
 $C.@PageOverlay {}
 
 // cob made concrete poetry out of UI code and blamed it on intelliJ smh my head
+// I STG IT'S INTELLIJ THAT KEEPS MESSING WITH THE INDENTATION
+// also this UI system is making me relate to those "tfw you forgor a semicolon xd" memes...
 $C.@DecoratedContainer {
   Anchor: (Width: 740, Height: 480);
   Group #TestGroup {
-
-    Label #TestTitle {
-      Anchor: (Full: 0);
-      Style: (...$C.@TitleStyle, HorizontalAlignment: Center, VerticalAlignment: Start);
-      Padding: (Horizontal: 19, Vertical: 15);
+    LayoutMode: Top;
+    Anchor: (Width: 740, Height: 40);
+    Group {
+          Label #TestTitle {
+            Anchor: (Full: 0);
+            Style: (...$C.@TitleStyle, HorizontalAlignment: Center, VerticalAlignment: Start);
+            Padding: (Horizontal: 19, Vertical: 15);
+          }
     }
 
-    ItemSlotButton #AssignColonist {
+
+    Group {
+      Anchor: (Width: 740, Height: 440);
+      LayoutMode: Left;
+      Group #UpgradeSide {
+        Anchor: (Width: 350, Height: 440);
+        Padding: (Right: 20);
+        LayoutMode: Top;
+
+        Group #UpgradeInteractor {
+          Anchor: (Width: 350, Height: 220);
+          Label #Ingr {
+             Anchor: (Width: 200, Height: 50);
+             Style: (HorizontalAlignment: Center, VerticalAlignment: Center);
+          }
+          ItemSlotButton #UpgradeButton {
+                                Anchor: (Width: 200, Height: 50);
+                                          LayoutMode: Full;
+                                          Padding: 2;
+                                          Style: (
+                                            Default: (
+                                              Background: #252f3a,
+                                            ),
+                                            Hovered: (
+                                              Background: #c9a050,
+                                            ),
+                                            Pressed: (
+                                              Background: #a08040,
+                                            ),
+                                            Disabled: (
+                                              Background: #1a1e24,
+                                            ),
+                                              Sounds: $C.@ButtonSounds,
+                                            );
+
+                                            Label #Upgr {
+                                                    Anchor: (Full: 0);
+                                                    Style: (HorizontalAlignment: Center, VerticalAlignment: Center, RenderBold: true);
+                                                    Text: "UPGRADE";
+                                                  }
+                        }
+        }
+
+        Group #ColonistInteractor {
+          Anchor: (Width: 350, Height: 220);
+
+              ItemSlotButton #AssignColonist {
 
 
-            Anchor: (Width: 200, Height: 50);
-                      LayoutMode: Full;
-                      Padding: 2;
-                      Style: (
-                        Default: (
-                          Background: #252f3a,
-                        ),
-                        Hovered: (
-                          Background: #c9a050,
-                        ),
-                        Pressed: (
-                          Background: #a08040,
-                        ),
-                        Disabled: (
-                          Background: #1a1e24,
-                        ),
-                          Sounds: $C.@ButtonSounds,
-                        );
+                      Anchor: (Width: 200, Height: 50);
+                                LayoutMode: Full;
+                                Padding: 2;
+                                Style: (
+                                  Default: (
+                                    Background: #252f3a,
+                                  ),
+                                  Hovered: (
+                                    Background: #c9a050,
+                                  ),
+                                  Pressed: (
+                                    Background: #a08040,
+                                  ),
+                                  Disabled: (
+                                    Background: #1a1e24,
+                                  ),
+                                    Sounds: $C.@ButtonSounds,
+                                  );
 
-                        Label #Lab {
-                                Anchor: (Full: 0);
-                                Style: (HorizontalAlignment: Center, VerticalAlignment: Center, RenderBold: true);
-                              }
+                                  Label #Lab {
+                                          Anchor: (Full: 0);
+                                          Style: (HorizontalAlignment: Center, VerticalAlignment: Center, RenderBold: true);
+                                        }
+              }
+        }
+      }
+
+      Group #LoreSide {
+        Anchor: (Width: 350, Height: 440);
+        LayoutMode: Top;
+        Label #BuildingLore {
+                          Anchor: (Full: 0);
+                          Style: (
+                                FontSize: 24,
+                                VerticalAlignment: Center,
+                                RenderUppercase: true,
+                                TextColor: #b4c8c9,
+                                FontName: "Secondary",
+                                RenderBold: true,
+                                LetterSpacing: 0,
+                                HorizontalAlignment: Center
+                              );
+                              Padding: (Horizontal: 19);
+        }
+      }
     }
+
+
   }
 }
