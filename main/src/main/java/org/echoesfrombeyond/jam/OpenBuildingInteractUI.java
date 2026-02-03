@@ -15,10 +15,12 @@ public class OpenBuildingInteractUI {
 
     var player = buffer.getComponent(ref, Player.getComponentType());
     var playerRef = buffer.getComponent(ref, PlayerRef.getComponentType());
+    var gs = buffer.getComponent(ref, Plugin.getStageType());
 
     if (player == null
         || playerRef == null
-        || buffer.getComponent(ref, Plugin.getPlaceType()) != null) return;
+        || buffer.getComponent(ref, Plugin.getPlaceType()) != null
+        || (gs != null && gs.isBattle)) return;
 
     player
         .getPageManager()

@@ -13,8 +13,10 @@ $C.@DecoratedContainer {
       Padding: (Horizontal: 19, Vertical: 15);
     }
 
-    ItemSlotButton #Ignore {
-            Anchor: (Width: 10, Height: 10);
+    ItemSlotButton #AssignColonist {
+
+
+            Anchor: (Width: 200, Height: 50);
                       LayoutMode: Full;
                       Padding: 2;
                       Style: (
@@ -32,6 +34,11 @@ $C.@DecoratedContainer {
                         ),
                           Sounds: $C.@ButtonSounds,
                         );
+
+                        Label #Lab {
+                                Anchor: (Full: 0);
+                                Style: (HorizontalAlignment: Center, VerticalAlignment: Center, RenderBold: true);
+                              }
     }
   }
 }

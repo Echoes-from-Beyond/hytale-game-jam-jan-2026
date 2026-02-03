@@ -55,10 +55,12 @@ public class ChooseBuildingUI
       List<UpgradeRequirement> ur = targetBuild.upgrades.getFirst().requirements;
       Pair<String, String> compactedUr = compactRequirements(ur);
 
-      for(int j = 0; j < ur.size(); j++) {
+      for (int j = 0; j < ur.size(); j++) {
         String selectInner = select + " #Requirement[" + j + "]";
         commandBuilder.append(select + " #Requirement", "Choose_Building_Requirement.ui");
-        commandBuilder.set(selectInner + " #RequirementLabel.Text", ur.get(j).resourceType + ": " + ur.get(j).amount);
+        commandBuilder.set(
+            selectInner + " #RequirementLabel.Text",
+            ur.get(j).resourceType + ": " + ur.get(j).amount);
       }
 
       eventBuilder.addEventBinding(

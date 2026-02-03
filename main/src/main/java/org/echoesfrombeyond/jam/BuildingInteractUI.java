@@ -37,19 +37,47 @@ public class BuildingInteractUI
       UIEventBuilder eventBuilder,
       Store<EntityStore> store) {
     commandBuilder.append("Building_Interact.ui");
+
     String selector = "#TestGroup";
-    commandBuilder.set(selector + " #TestTitle.Text", building.type.prettyName);
+    setFromBuilding(building, commandBuilder);
 
     eventBuilder.addEventBinding(
         CustomUIEventBindingType.Activating,
-        selector + " #Ignore",
-        EventData.of(BuildingInteractUIData.BUILDING_NAME, building.type.prettyName),
+        selector + " #AssignColonist",
+        EventData.of(BuildingInteractUIData.BUILDING_NAME, "ignored"),
         false);
+  }
+
+  private void setFromBuilding(JamSave.Building building, UICommandBuilder commandBuilder) {
+    String selector = "#TestGroup";
+    commandBuilder.set(selector + " #TestTitle.Text", building.type.prettyName);
+
+    if (!building.type.needsColonist) {
+      commandBuilder.set(selector + " #AssignColonist.Visible", false);
+    } else if (building.hasColonist()) {
+      commandBuilder.set(selector + " #AssignColonist #Lab.Text", "Remove Colonist");
+    } else {
+      commandBuilder.set(selector + " #AssignColonist #Lab.Text", "Assign Colonist");
+    }
   }
 
   @Override
   public void handleDataEvent(
-      Ref<EntityStore> ref, Store<EntityStore> store, BuildingInteractUIData data) {}
+      Ref<EntityStore> ref, Store<EntityStore> store, BuildingInteractUIData data) {
+    if (!building.type.needsColonist) return;
+
+    var world = store.getExternalData().getWorld();
+    world.execute(
+        () -> {
+          if (building.hasColonist()) building.removeColonist();
+          else building.assignColonist();
+
+          UICommandBuilder builder = new UICommandBuilder();
+          setFromBuilding(building, builder);
+
+          this.sendUpdate(builder);
+        });
+  }
 
   public static class BuildingInteractUIData {
     // placeholder

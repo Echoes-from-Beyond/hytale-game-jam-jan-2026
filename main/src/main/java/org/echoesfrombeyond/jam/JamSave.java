@@ -50,6 +50,8 @@ public class JamSave implements Resource<ChunkStore> {
     // for turrets
     public float fireDelay;
 
+    private boolean hasColonist;
+
     public Building() {
       this.type = BuildingType.Farm;
       this.min = new Vector3i(0, 0, 0);
@@ -63,6 +65,33 @@ public class JamSave implements Resource<ChunkStore> {
       this.min = other.min.clone();
       this.max = other.max.clone();
       this.fireDelay = other.fireDelay;
+      this.hasColonist = other.type.needsColonist && other.hasColonist;
+    }
+
+    public boolean assignColonist() {
+      if (type.needsColonist && !hasColonist) {
+        hasColonist = true;
+        return true;
+      }
+
+      return false;
+    }
+
+    public boolean removeColonist() {
+      if (type.needsColonist && hasColonist) {
+        hasColonist = false;
+        return true;
+      }
+
+      return false;
+    }
+
+    public boolean hasColonist() {
+      return type.needsColonist && hasColonist;
+    }
+
+    public int resourceMul() {
+      return type.needsColonist ? (hasColonist ? 1 : 0) : 1;
     }
   }
 
@@ -90,6 +119,11 @@ public class JamSave implements Resource<ChunkStore> {
               new KeyedCodec<>("FireDelay", Codec.FLOAT),
               (self, value) -> self.fireDelay = value,
               (self) -> self.fireDelay)
+          .add()
+          .append(
+              new KeyedCodec<>("HasColonist", Codec.BOOLEAN),
+              (self, value) -> self.hasColonist = value,
+              (self) -> self.hasColonist)
           .add()
           .build();
 

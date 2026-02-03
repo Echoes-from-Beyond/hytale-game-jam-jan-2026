@@ -1,13 +1,12 @@
 package org.echoesfrombeyond.jam;
 
-import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 public class OpenJoinUI {
-  public static void openJoinPopup( Ref<EntityStore> ref, PlayerRef playerRef) {
+  public static void openJoinPopup(Ref<EntityStore> ref, PlayerRef playerRef) {
 
     var player = ref.getStore().getComponent(ref, Player.getComponentType());
 
