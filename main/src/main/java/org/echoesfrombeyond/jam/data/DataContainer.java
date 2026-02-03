@@ -95,6 +95,9 @@ public class DataContainer {
         safe to eat, and what
         only sends you on a trip
         to the latrine.
+
+        Produces 4 food when the
+        day is advanced.
         """),
     new DataContainer(
         JamSave.BuildingType.Well,
@@ -120,6 +123,9 @@ public class DataContainer {
         It does take a bit of effort
         to drill down to them,
         however.
+
+        Produces 4 water when the
+        day is advanced.
         """),
     new DataContainer(
         JamSave.BuildingType.ScavengerPort,
@@ -152,6 +158,9 @@ public class DataContainer {
         It's a matter of sending someone
         out to get it. And praying that
         the automatons don't find them.
+
+        Produces 5 scrap when the day is
+        advanced.
         """),
     new DataContainer(
         JamSave.BuildingType.Turret,

@@ -3,12 +3,12 @@ $C = "Common.ui";
 $C.@PageOverlay {}
 
 $C.@DecoratedContainer {
-  Anchor: (Width: 500, Height: 340);
+  Anchor: (Width: 650, Height: 340);
 
     Group #Container {
       LayoutMode: Top;
       Group #LabelDiv {
-        Anchor: (Width: 450, Height: 150);
+        Anchor: (Width: 625, Height: 150);
         Label #LoseTitle {
                 Anchor: (Full: 0);
                 Style: (

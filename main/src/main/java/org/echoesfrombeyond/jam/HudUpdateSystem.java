@@ -41,9 +41,13 @@ public class HudUpdateSystem extends EntityEventSystem<EntityStore, HudUpdateSys
 
     if (!(player.getHudManager().getCustomHud() instanceof SimHud simHud)) return;
 
+    var assignedColonists =
+        (int) jam.buildings.stream().filter(JamSave.Building::hasColonist).count();
+
     UICommandBuilder builder = new UICommandBuilder();
     builder.set("#day.Text", string(jam.day));
     builder.set("#towerhealth.Text", string(jam.towerHealth));
+    builder.set("#allcolonists.Text", string(jam.colonists + assignedColonists));
     builder.set("#colonists.Text", string(jam.colonists));
     builder.set("#food.Text", string(jam.food));
     builder.set("#water.Text", string(jam.water));
