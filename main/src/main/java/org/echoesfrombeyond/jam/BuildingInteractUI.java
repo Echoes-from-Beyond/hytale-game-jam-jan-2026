@@ -68,7 +68,7 @@ public class BuildingInteractUI
         commandBuilder.set("#Ingr.Text", radioUpgrade.resourceType + ": " + radioUpgrade.amount);
         commandBuilder.set("#Upgr.Text", "UPGRADE\n100 SCRAP");
       } else {
-        commandBuilder.set("#UpgradeButton.Disabled", true);
+        commandBuilder.set("#UpgradeButton.Visible", false);
       }
     }
 
@@ -96,6 +96,8 @@ public class BuildingInteractUI
       commandBuilder.set("#AssignColonist #Lab.Text", "Assign Colonist");
     } else if (building.hasColonist()) {
       commandBuilder.set("#AssignColonist #Lab.Text", "Remove Colonist");
+    } else {
+      commandBuilder.set("#AssignColonist #Lab.Text", "Assign Colonist");
     }
   }
 

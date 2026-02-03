@@ -95,7 +95,7 @@ $C.@DecoratedContainer {
 
       Group #LoreSide {
         Anchor: (Width: 350, Height: 440);
-        LayoutMode: Top;
+        LayoutMode: Center;
         Label #BuildingLore {
                           Anchor: (Full: 0);
                           Style: (

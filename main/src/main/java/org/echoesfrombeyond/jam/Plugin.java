@@ -312,7 +312,7 @@ public class Plugin extends JavaPlugin {
     ServerCameraSettings settings = new ServerCameraSettings();
     settings.positionLerpSpeed = 0.05f;
     settings.rotationLerpSpeed = 0.05f;
-    settings.distance = 5.0f;
+    settings.distance = 0.0f;
     settings.displayCursor = true;
     settings.isFirstPerson = false;
     settings.movementMultiplier = new com.hypixel.hytale.protocol.Vector3f(0, 0, 0);
