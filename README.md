@@ -6,6 +6,10 @@ Survive in the fallen magitech metropolis of the Crucible; fend off hostile auto
 
 This mod probably won't work with others installed, as it makes the rest of the game inaccessible due to transporting you straight into the colony sim. It _might_ work with multiple players... but do so at your own risk :)
 
+# Usage
+
+To build, run `./gradlew syncPlugins`. This will output the mod to `run/mods/Scrapvengers-[version].jar`. You can then use it as you would any other Hytale mod.
+
 # The Team
 
 Cobrinthine (Hytale IGN: Poutine) and Kyle (IGN: Vegetal)

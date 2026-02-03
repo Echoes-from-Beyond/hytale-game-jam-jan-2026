@@ -5,4 +5,4 @@ version = "0.1.0"
 
 apply<JavaConventionPlugin>()
 
-withHytalePlugin("HytaleGameJam")
+withHytalePlugin("Scrapvengers")
