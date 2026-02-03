@@ -22,10 +22,10 @@ public class LoseUI extends InteractiveCustomUIPage<LoseUI.LoseData> {
 
   @Override
   public void build(
-          Ref<EntityStore> ref,
-          UICommandBuilder commandBuilder,
-          UIEventBuilder eventBuilder,
-          Store<EntityStore> store) {
+      Ref<EntityStore> ref,
+      UICommandBuilder commandBuilder,
+      UIEventBuilder eventBuilder,
+      Store<EntityStore> store) {
     commandBuilder.append("Lose.ui");
     String groupSelect = "#Container";
 
@@ -34,10 +34,10 @@ public class LoseUI extends InteractiveCustomUIPage<LoseUI.LoseData> {
     commandBuilder.set(groupSelect + " #ButtonTitle.Text", ":(");
 
     eventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            groupSelect + " #LoseButton",
-            EventData.of(LoseData.CLICKED_FIELD, String.valueOf(true)),
-            false);
+        CustomUIEventBindingType.Activating,
+        groupSelect + " #LoseButton",
+        EventData.of(LoseData.CLICKED_FIELD, String.valueOf(true)),
+        false);
   }
 
   public void handleDataEvent(Ref<EntityStore> ref, Store<EntityStore> store, LoseData data) {
@@ -48,13 +48,13 @@ public class LoseUI extends InteractiveCustomUIPage<LoseUI.LoseData> {
     static final String CLICKED_FIELD = "Clicked";
 
     public static final BuilderCodec<LoseData> CODEC =
-            BuilderCodec.builder(LoseData.class, LoseData::new)
-                    .append(
-                            new KeyedCodec<>(CLICKED_FIELD, BuilderCodec.STRING),
-                            (data, s) -> data.clicked = s,
-                            (data) -> data.clicked)
-                    .add()
-                    .build();
+        BuilderCodec.builder(LoseData.class, LoseData::new)
+            .append(
+                new KeyedCodec<>(CLICKED_FIELD, BuilderCodec.STRING),
+                (data, s) -> data.clicked = s,
+                (data) -> data.clicked)
+            .add()
+            .build();
 
     private String clicked = "false";
 

@@ -11,8 +11,8 @@ public class OpenLoseUI {
     var player = ref.getStore().getComponent(ref, Player.getComponentType());
 
     if (player == null
-            || playerRef == null
-            || ref.getStore().getComponent(ref, Plugin.getPlaceType()) != null) return;
+        || playerRef == null
+        || ref.getStore().getComponent(ref, Plugin.getPlaceType()) != null) return;
 
     player.getPageManager().openCustomPage(ref, ref.getStore(), new JoinUI(playerRef));
   }

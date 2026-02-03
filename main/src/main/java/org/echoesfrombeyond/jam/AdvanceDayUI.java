@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
@@ -114,6 +115,55 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
               }
             }
           }
+          var assignedColonists =
+              (int) save.buildings.stream().filter(JamSave.Building::hasColonist).count();
+          var idleColonists = save.colonists;
+
+          var totalColonists = assignedColonists + idleColonists;
+
+          save.food -= totalColonists;
+          save.water -= totalColonists;
+
+          var deficit = Math.min(save.food, save.water);
+          if (deficit < 0) {
+            var colonistsToKill = Math.abs(deficit);
+
+            player.sendMessage(
+                Message.raw(
+                    "You lost "
+                        + Math.min(colonistsToKill, totalColonists)
+                        + " colonist(s) to lack of "
+                        + (save.food < save.water ? "water" : "food")
+                        + "! Build wells to produce water and farms to produce food."));
+
+            save.colonists = Math.max(save.colonists - colonistsToKill, 0);
+            player.sendMessage(
+                Message.raw(
+                    " -- Lost " + Math.min(colonistsToKill, idleColonists) + " idle colonist(s)"));
+
+            if (colonistsToKill >= idleColonists) {
+              var colonistsToKillAtWork = colonistsToKill - idleColonists;
+
+              if (assignedColonists - colonistsToKillAtWork <= 0) {
+                player.sendMessage(Message.raw("You lost all of your colonists!"));
+                save.towerHealth = 0;
+              } else {
+                int removed = 0;
+
+                for (var building : save.buildings) {
+                  if (building.hasColonist()) {
+                    building.removeColonist();
+                    if (++removed >= colonistsToKillAtWork) break;
+                  }
+                }
+
+                player.sendMessage(Message.raw(" -- Lost " + removed + " assigned colonists"));
+              }
+            }
+          }
+
+          if (save.food < 0) save.food = 0;
+          if (save.water < 0) save.water = 0;
 
           if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
         });
