@@ -133,7 +133,7 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
                     "You lost "
                         + Math.min(colonistsToKill, totalColonists)
                         + " colonist(s) to lack of "
-                        + (save.food < save.water ? "water" : "food")
+                        + (save.food < save.water ? "food" : "water")
                         + "! Build wells to produce water and farms to produce food."));
 
             save.colonists = Math.max(save.colonists - colonistsToKill, 0);
