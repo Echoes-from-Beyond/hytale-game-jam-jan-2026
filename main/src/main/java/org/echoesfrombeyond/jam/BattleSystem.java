@@ -97,6 +97,7 @@ public class BattleSystem extends EntityTickingSystem<EntityStore> {
             }
 
             stage.reset();
+            if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
             return;
           }
 

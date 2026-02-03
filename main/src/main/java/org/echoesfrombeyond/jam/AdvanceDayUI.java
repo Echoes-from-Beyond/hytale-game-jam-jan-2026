@@ -114,6 +114,8 @@ public class AdvanceDayUI extends InteractiveCustomUIPage<AdvanceDayUI.AdvanceDa
               }
             }
           }
+
+          if (ref.isValid()) store.invoke(ref, new HudUpdateSystem.Event());
         });
   }
 
