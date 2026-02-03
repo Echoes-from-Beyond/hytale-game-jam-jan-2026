@@ -49,7 +49,7 @@ public class EnemyDeathSystem extends DeathSystems.OnDeathSystem {
           if (stage == null || !stage.isBattle) return;
 
           stage.killed++;
-          if (RNG.nextInt(6) != 5) {
+          if (RNG.nextInt(10) != 9) {
             return;
           }
           world.sendMessage(Message.raw(DEATH_MESSAGES.get(RNG.nextInt(DEATH_MESSAGES.size()))));
