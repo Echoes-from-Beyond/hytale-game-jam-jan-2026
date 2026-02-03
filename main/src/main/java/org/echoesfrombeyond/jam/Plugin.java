@@ -133,8 +133,8 @@ public class Plugin extends JavaPlugin {
     ENEMY_TYPE =
         getEntityStoreRegistry().registerComponent(EnemyComponent.class, EnemyComponent::new);
 
-    getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
     getEntityStoreRegistry().registerSystem(new EnemyDamageTowerSystem());
+    getEntityStoreRegistry().registerSystem(new EnemyDeathSystem());
     getEntityStoreRegistry().registerSystem(new TurretFireSystem());
     getEntityStoreRegistry().registerSystem(new BattleSystem());
 

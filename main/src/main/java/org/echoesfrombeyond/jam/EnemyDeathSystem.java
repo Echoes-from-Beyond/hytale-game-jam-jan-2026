@@ -3,6 +3,9 @@ package org.echoesfrombeyond.jam;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.dependency.Dependency;
+import com.hypixel.hytale.component.dependency.Order;
+import com.hypixel.hytale.component.dependency.SystemDependency;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
@@ -10,6 +13,7 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DeathSystems;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -44,8 +48,7 @@ public class EnemyDeathSystem extends DeathSystems.OnDeathSystem {
               world.getEntityStore().getStore().getComponent(playerRef, Plugin.getStageType());
           if (stage == null || !stage.isBattle) return;
 
-          var cause = deathComponent.getDeathCause();
-          if (cause != null && !cause.getId().equals("OutOfWorld")) stage.killed++;
+          stage.killed++;
           if (RNG.nextInt(6) != 5) {
             return;
           }
@@ -56,5 +59,10 @@ public class EnemyDeathSystem extends DeathSystems.OnDeathSystem {
   @Override
   public Query<EntityStore> getQuery() {
     return Query.and(Plugin.getEnemyType());
+  }
+
+  @Override
+  public Set<Dependency<EntityStore>> getDependencies() {
+    return Set.of(new SystemDependency<>(Order.AFTER, EnemyDamageTowerSystem.class));
   }
 }
