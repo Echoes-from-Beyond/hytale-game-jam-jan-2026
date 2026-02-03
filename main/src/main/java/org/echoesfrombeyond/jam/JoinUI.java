@@ -40,6 +40,9 @@ public class JoinUI extends CustomUIPage {
         This mod is played almost entirely with your mouse. Use the menus in your
         hotbar to place buildings and to advance the day (i.e. gather your
         resources). Be careful, because your enemies strike in meantime.
+        
+        NOTE: in case enemies somehow get stuck, they will automatically die after
+        60 seconds, to avoid softlocking.
 
         Avoid loading another mod alongside this one. Scrapvengers is meant to be
         standalone - it changes enough of the game that things are bound to go
