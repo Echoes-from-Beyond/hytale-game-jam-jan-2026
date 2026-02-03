@@ -25,7 +25,7 @@ public class JamSave implements Resource<ChunkStore> {
     RadioTower("radio_tower", false, "Radio Tower"),
     ScavengerPort("scavenger_port", true, "Scavenger Port"),
     Turret("turret", false, "Turret"),
-    Well("well", false, "Well");
+    Well("well", true, "Well");
 
     public final String prefabAsset;
     public final boolean needsColonist;
@@ -178,7 +178,7 @@ public class JamSave implements Resource<ChunkStore> {
     this.food = 20;
     this.scrap = 10;
     this.water = 10;
-    this.colonists = 0;
+    this.colonists = 3;
     this.buildings = new CopyOnWriteArrayList<>();
   }
 
