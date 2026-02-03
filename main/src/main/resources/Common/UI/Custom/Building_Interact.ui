@@ -9,16 +9,16 @@ $C.@DecoratedContainer {
   Anchor: (Width: 740, Height: 480);
   Group #TestGroup {
     LayoutMode: Top;
-    Anchor: (Width: 740, Height: 40);
     Group {
-          Label #TestTitle {
-            Anchor: (Full: 0);
-            Style: (...$C.@TitleStyle, HorizontalAlignment: Center, VerticalAlignment: Start);
-            Padding: (Horizontal: 19, Vertical: 15);
-          }
+        Anchor: (Width: 740, Height: 40);
+              Label #TestTitle {
+                Anchor: (Full: 0);
+                Style: (...$C.@TitleStyle, HorizontalAlignment: Center, VerticalAlignment: Start);
+                Padding: (Horizontal: 19, Vertical: 15);
+              }
+
+
     }
-
-
     Group {
       Anchor: (Width: 740, Height: 440);
       LayoutMode: Left;
@@ -56,7 +56,6 @@ $C.@DecoratedContainer {
                                             Label #Upgr {
                                                     Anchor: (Full: 0);
                                                     Style: (HorizontalAlignment: Center, VerticalAlignment: Center, RenderBold: true);
-                                                    Text: "UPGRADE";
                                                   }
                         }
         }
@@ -100,12 +99,10 @@ $C.@DecoratedContainer {
         Label #BuildingLore {
                           Anchor: (Full: 0);
                           Style: (
-                                FontSize: 24,
+                                FontSize: 16,
                                 VerticalAlignment: Center,
-                                RenderUppercase: true,
                                 TextColor: #b4c8c9,
                                 FontName: "Secondary",
-                                RenderBold: true,
                                 LetterSpacing: 0,
                                 HorizontalAlignment: Center
                               );
