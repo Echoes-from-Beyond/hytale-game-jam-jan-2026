@@ -374,6 +374,15 @@ public class Plugin extends JavaPlugin {
                       .resolve("Prefabs")
                       .resolve(JamSave.BuildingType.RadioTower.getPrefabAsset()));
 
+          var spawnIndicatorPrefabBuffer =
+              PrefabBufferUtil.getCached(
+                  AssetModule.get()
+                      .getAssetPack("org.echoesfrombeyond:Scrapvengers")
+                      .getRoot()
+                      .resolve("Server")
+                      .resolve("Prefabs")
+                      .resolve(JamSave.BuildingType.SpawnIndicator.getPrefabAsset()));
+
           PrefabUtil.paste(
               tentPrefabBuffer,
               world,
@@ -387,6 +396,15 @@ public class Plugin extends JavaPlugin {
               towerPrefabBuffer,
               world,
               RADIO_LOC,
+              Rotation.None,
+              true,
+              new FastRandom(),
+              world.getEntityStore().getStore());
+
+          PrefabUtil.paste(
+              spawnIndicatorPrefabBuffer,
+              world,
+              ENEMY_SPAWN_LOC,
               Rotation.None,
               true,
               new FastRandom(),
@@ -418,8 +436,22 @@ public class Plugin extends JavaPlugin {
                   RADIO_LOC.y + towerPrefabBuffer.getMaxY(),
                   RADIO_LOC.z + towerPrefabBuffer.getMaxZ());
 
+          JamSave.Building spawnIndicator = new JamSave.Building();
+          spawnIndicator.type = JamSave.BuildingType.SpawnIndicator;
+          spawnIndicator.min =
+              new Vector3i(
+                  ENEMY_SPAWN_LOC.x + spawnIndicatorPrefabBuffer.getMinX(),
+                  ENEMY_SPAWN_LOC.y + spawnIndicatorPrefabBuffer.getMinY(),
+                  ENEMY_SPAWN_LOC.z + spawnIndicatorPrefabBuffer.getMinZ());
+          spawnIndicator.max =
+              new Vector3i(
+                  ENEMY_SPAWN_LOC.x + spawnIndicatorPrefabBuffer.getMaxX(),
+                  ENEMY_SPAWN_LOC.y + spawnIndicatorPrefabBuffer.getMaxY(),
+                  ENEMY_SPAWN_LOC.z + spawnIndicatorPrefabBuffer.getMaxZ());
+
           save.buildings.add(tent);
           save.buildings.add(tower);
+          save.buildings.add(spawnIndicator);
         });
   }
 }

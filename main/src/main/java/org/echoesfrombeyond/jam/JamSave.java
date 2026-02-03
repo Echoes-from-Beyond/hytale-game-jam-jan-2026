@@ -25,6 +25,7 @@ public class JamSave implements Resource<ChunkStore> {
     RadioTower("radio_tower", false, "Radio Tower"),
     ScavengerPort("scavenger_port", true, "Scavenger Port"),
     Turret("turret", false, "Turret"),
+    SpawnIndicator("spawn_indicator", false, "Enemy Spawner"),
     Well("well", true, "Well");
 
     public final String prefabAsset;
